@@ -1,0 +1,37 @@
+=================================
+ Linux Ops Automation Lab
+ System Health Report
+=================================
+
+Generated: Thu May 28 02:37:15 PM PDT 2026
+
+========== HOSTNAME ==========
+trickydeb
+
+========== DISK USAGE ==========
+Filesystem      Size  Used Avail Use% Mounted on
+udev            3.8G     0  3.8G   0% /dev
+tmpfs           768M  1.5M  766M   1% /run
+/dev/nvme0n1p2  226G  5.4G  209G   3% /
+tmpfs           3.8G     0  3.8G   0% /dev/shm
+efivarfs        374K  155K  215K  42% /sys/firmware/efi/efivars
+tmpfs           5.0M  8.0K  5.0M   1% /run/lock
+tmpfs           1.0M     0  1.0M   0% /run/credentials/systemd-journald.service
+tmpfs           3.8G  164K  3.8G   1% /tmp
+/dev/nvme0n1p1  975M  8.8M  966M   1% /boot/efi
+tmpfs           1.0M     0  1.0M   0% /run/credentials/getty@tty1.service
+tmpfs           768M   88K  768M   1% /run/user/1000
+
+========== MEMORY USAGE ==========
+               total        used        free      shared  buff/cache   available
+Mem:           7.5Gi       2.9Gi       4.0Gi       392Mi       1.2Gi       4.6Gi
+Swap:          7.7Gi          0B       7.7Gi
+
+========== UPTIME ==========
+ 14:37:15 up  2:12,  1 user,  load average: 0.80, 0.71, 0.55
+
+========== ACTIVE SERVICES ==========
+active
+active
+active
+
