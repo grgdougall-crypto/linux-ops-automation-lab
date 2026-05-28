@@ -1,0 +1,8 @@
+*.log
+*.tmp
+
+reports/*.txt
+reports/*.tar.gz
+
+__pycache__/
+.env
