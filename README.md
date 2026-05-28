@@ -1,17 +1,149 @@
+# Linux Ops Automation Lab
+
+A lightweight Linux administration and automation toolkit built on Debian Linux. This project demonstrates practical system administration, Bash scripting, automation, monitoring, backup creation, report generation, and Git-based workflow management.
+
+## Overview
+
+The goal of this project is to simulate common Linux operations tasks that a junior system administrator, IT support specialist, or cybersecurity analyst might perform in a real environment.
+
+The toolkit includes scripts for:
+
+* Monitoring disk usage
+* Monitoring memory usage
+* Checking service health
+* Reviewing authentication activity
+* Creating compressed backups
+* Generating system health reports
+
+All scripts were developed and tested on Debian Linux.
+
+## Technologies Used
+
+* Debian Linux
+* Bash
+* Git
+* GitHub
+* Linux System Utilities
+
+  * df
+  * free
+  * systemctl
+  * tar
+  * hostname
+  * uptime
+
+## Project Structure
+
+```text
+linux-ops-automation-lab/
+├── scripts/
+│   ├── check_disk_usage.sh
+│   ├── check_memory_usage.sh
+│   ├── service_status_check.sh
+│   ├── check_failed_logins.sh
+│   ├── backup_home_directory.sh
+│   └── generate_system_report.sh
+│
+├── reports/
+│
+├── documentation/
+│
+├── screenshots/
+│
+├── python/
+│
+├── README.md
+└── .gitignore
+```
+
+## Included Scripts
+
+### check_disk_usage.sh
+
+Displays current disk utilization using human-readable formatting.
+
+### check_memory_usage.sh
+
+Displays current memory and swap usage.
+
+### service_status_check.sh
+
+Checks the operational status of common Linux services:
+
+* SSH
+* NetworkManager
+* Cron
+
+### check_failed_logins.sh
+
+Reviews authentication logs and reports failed login activity when available.
+
+### backup_home_directory.sh
+
+Creates a compressed backup archive of selected user data and stores it in the reports directory.
+
+### generate_system_report.sh
+
+Generates a consolidated system health report including:
+
+* Hostname
+* Disk usage
+* Memory usage
+* Uptime
+* Service status
+
+## Example Output
+
+Example system report contents:
+
+```text
 Linux Ops Automation Lab
+System Health Report
 
-A lightweight Linux administration and automation toolkit built on Debian Linux.
+Hostname
+Disk Usage
+Memory Usage
+Uptime
+Active Services
+```
 
-Features:
-✓ Disk usage monitoring
-✓ Memory usage monitoring
-✓ Service status monitoring
-✓ Failed login analysis
-✓ Home directory backups
-✓ System health report generation
+## Screenshots
 
-Technologies:
-- Debian Linux
-- Bash
-- Git
-- GitHub
+Screenshots will be added as the project evolves.
+
+## Future Enhancements
+
+### Python Reporting
+
+* Parse generated reports
+* Create summarized output
+* Export formatted reports
+
+### Automation
+
+* Scheduled execution using cron
+* Automated report retention
+* Automated backup cleanup
+
+### AI Integration
+
+Future versions may integrate AI-assisted analysis to:
+
+* Summarize system health
+* Identify priority issues
+* Recommend remediation actions
+* Generate executive summaries
+
+## Learning Objectives
+
+This project demonstrates:
+
+* Linux administration
+* Bash scripting
+* System monitoring
+* Backup automation
+* Report generation
+* Git version control
+* GitHub workflow management
+* Technical documentation
+
