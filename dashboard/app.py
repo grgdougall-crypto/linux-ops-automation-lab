@@ -69,6 +69,20 @@ def get_status_class_from_percent(percent_text):
         return "status-warning"
 
 
+def get_disk_health(percent_text):
+    try:
+        percent = int(percent_text.replace("%", ""))
+
+        if percent >= 90:
+            return "CRITICAL"
+        if percent >= 70:
+            return "WARNING"
+        return "NORMAL"
+
+    except ValueError:
+        return "UNKNOWN"
+
+
 def format_chart_label(report):
     timestamp = report.stem.replace("system_report_", "")
     parts = timestamp.split("_")
@@ -87,6 +101,7 @@ def get_latest_report_data():
             "latest_report": "No reports found",
             "report_count": 0,
             "disk_usage": "Unavailable",
+            "disk_health": "UNKNOWN",
             "memory_used": "Unavailable",
             "trend_status": "UNKNOWN",
             "chart_labels": [],
@@ -94,6 +109,7 @@ def get_latest_report_data():
             "current_health_score": 0,
             "health_class": "status-warning",
             "disk_class": "status-warning",
+            "status": "UNKNOWN",
             "status_class": "status-warning"
         }
 
@@ -121,6 +137,7 @@ def get_latest_report_data():
 
     health_class = get_status_class_from_score(current_health_score)
     disk_class = get_status_class_from_percent(disk_usage)
+    disk_health = get_disk_health(disk_usage)
 
     if current_health_score >= 90:
         status = "HEALTHY"
@@ -133,6 +150,7 @@ def get_latest_report_data():
         "latest_report": latest_report.name,
         "report_count": len(reports),
         "disk_usage": disk_usage,
+        "disk_health": disk_health,
         "memory_used": memory_used,
         "trend_status": "STABLE",
         "chart_labels": chart_labels,
@@ -156,6 +174,7 @@ def home():
         latest_report=report_data["latest_report"],
         report_count=report_data["report_count"],
         disk_usage=report_data["disk_usage"],
+        disk_health=report_data["disk_health"],
         memory_used=report_data["memory_used"],
         trend_status=report_data["trend_status"],
         automation_status=automation_data["status"],
