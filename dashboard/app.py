@@ -9,6 +9,30 @@ REPORT_DIR = PROJECT_DIR / "reports"
 AUTOMATION_LOG = REPORT_DIR / "daily_automation.log"
 
 
+def get_automation_info():
+    if not AUTOMATION_LOG.exists():
+        return {
+            "status": "NO LOG FOUND",
+            "last_run": "Unknown"
+        }
+
+    log_content = AUTOMATION_LOG.read_text().splitlines()
+
+    status = "CHECK LOG"
+    last_run = "Unknown"
+
+    for line in reversed(log_content):
+        if "Workflow completed:" in line:
+            status = "SUCCESS"
+            last_run = line.replace("Workflow completed:", "").strip()
+            break
+
+    return {
+        "status": status,
+        "last_run": last_run
+    }
+
+
 def get_latest_report_data():
     reports = sorted(REPORT_DIR.glob("system_report_*.txt"))
 
@@ -18,8 +42,7 @@ def get_latest_report_data():
             "report_count": 0,
             "disk_usage": "Unavailable",
             "memory_used": "Unavailable",
-            "trend_status": "UNKNOWN",
-            "automation_status": "UNKNOWN"
+            "trend_status": "UNKNOWN"
         }
 
     latest_report = reports[-1]
@@ -39,34 +62,20 @@ def get_latest_report_data():
             if len(parts) >= 3:
                 memory_used = parts[2]
 
-    trend_status = "STABLE"
-    automation_status = get_automation_status()
-
     return {
         "latest_report": latest_report.name,
         "report_count": len(reports),
         "disk_usage": disk_usage,
         "memory_used": memory_used,
-        "trend_status": trend_status,
-        "automation_status": automation_status
+        "trend_status": "STABLE"
     }
-
-
-def get_automation_status():
-    if not AUTOMATION_LOG.exists():
-        return "NO LOG FOUND"
-
-    log_content = AUTOMATION_LOG.read_text()
-
-    if "Workflow completed" in log_content:
-        return "SUCCESS"
-
-    return "CHECK LOG"
 
 
 @app.route("/")
 def home():
+
     report_data = get_latest_report_data()
+    automation_data = get_automation_info()
 
     return render_template(
         "index.html",
@@ -76,7 +85,8 @@ def home():
         disk_usage=report_data["disk_usage"],
         memory_used=report_data["memory_used"],
         trend_status=report_data["trend_status"],
-        automation_status=report_data["automation_status"],
+        automation_status=automation_data["status"],
+        last_run=automation_data["last_run"],
         health_score="100/100",
         status="HEALTHY"
     )
