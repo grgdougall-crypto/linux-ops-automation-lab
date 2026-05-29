@@ -1,12 +1,17 @@
 from flask import Flask, render_template
 from pathlib import Path
 import socket
+import sys
 
 app = Flask(__name__)
 
 PROJECT_DIR = Path.home() / "linux-ops-automation-lab"
 REPORT_DIR = PROJECT_DIR / "reports"
 AUTOMATION_LOG = REPORT_DIR / "daily_automation.log"
+
+sys.path.append(str(PROJECT_DIR / "python"))
+
+from ai_ops_summary import get_latest_report, extract_report_data, generate_local_ai_summary
 
 
 def get_automation_info():
@@ -81,6 +86,12 @@ def get_disk_health(percent_text):
 
     except ValueError:
         return "UNKNOWN"
+
+
+def get_ai_summary():
+    latest_report = get_latest_report()
+    report_data = extract_report_data(latest_report)
+    return generate_local_ai_summary(report_data)
 
 
 def format_chart_label(report):
@@ -167,6 +178,7 @@ def get_latest_report_data():
 def home():
     report_data = get_latest_report_data()
     automation_data = get_automation_info()
+    ai_summary = get_ai_summary()
 
     return render_template(
         "index.html",
@@ -186,7 +198,12 @@ def home():
         health_class=report_data["health_class"],
         disk_class=report_data["disk_class"],
         status=report_data["status"],
-        status_class=report_data["status_class"]
+        status_class=report_data["status_class"],
+        ai_provider=ai_summary["provider"],
+        ai_risk_level=ai_summary["risk_level"],
+        ai_summary=ai_summary["summary"],
+        ai_findings=ai_summary["findings"],
+        ai_recommendation=ai_summary["recommendation"]
     )
 
 

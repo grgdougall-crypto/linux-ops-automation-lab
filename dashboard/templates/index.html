@@ -68,6 +68,26 @@
         <canvas id="healthScoreChart"></canvas>
     </div>
 
+    <div class="card ai-card">
+        <h2>AI Operations Brief</h2>
+
+        <h3>Provider</h3>
+        <p>{{ ai_provider }}</p>
+
+        <h3>Risk Level</h3>
+        <p class="status-good">{{ ai_risk_level }}</p>
+
+        <h3>Key Findings</h3>
+        <ul>
+            {% for finding in ai_findings %}
+                <li>{{ finding }}</li>
+            {% endfor %}
+        </ul>
+
+        <h3>Recommended Action</h3>
+        <p>{{ ai_recommendation }}</p>
+    </div>
+
     <script>
         const chartLabels = {{ chart_labels | tojson }};
         const chartScores = {{ chart_scores | tojson }};
