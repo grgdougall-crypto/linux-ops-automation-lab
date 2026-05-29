@@ -92,6 +92,10 @@ Generates a consolidated system health report including:
 * Uptime
 * Service status
 
+### cleanup_old_reports.sh
+
+Applies a simple report retention policy by keeping the newest system reports and deleting older report files.
+
 ## Example Output
 
 Example system report contents:
