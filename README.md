@@ -182,3 +182,15 @@ The following screenshots demonstrate the Linux automation scripts, generated re
 ### Health Score Assessment
 
 <img src="screenshots/06_health_score.png" width="800">
+
+### Health Score Assessment
+
+<img src="screenshots/06_health_score.png" width="800">
+
+### Trend Analysis
+
+<img src="screenshots/07_trend_analysis.png" width="800">
+
+### Daily Automation Log
+
+<img src="screenshots/08_daily_automation_log.png" width="800">
