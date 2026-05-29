@@ -5,6 +5,13 @@ import sys
 
 app = Flask(__name__)
 
+ADVISOR_RESPONSES = {
+    "health": "System health remains strong. Current health score is 100/100 and operational status is HEALTHY.",
+    "memory": "Memory utilization increased across recent reports but remains within acceptable limits. Continue monitoring.",
+    "disk": "Disk utilization is currently low and does not present an operational concern.",
+    "review": "Recommended review items include memory trends, report retention status, and automation workflow completion."
+}
+
 PROJECT_DIR = Path.home() / "linux-ops-automation-lab"
 REPORT_DIR = PROJECT_DIR / "reports"
 AUTOMATION_LOG = REPORT_DIR / "daily_automation.log"
@@ -237,6 +244,11 @@ def get_latest_report_data():
         "status_class": health_class
     }
 
+def get_advisor_response(question_type):
+    return ADVISOR_RESPONSES.get(
+        question_type,
+        "Select a question to generate an operational assessment."
+    )
 
 @app.route("/")
 def home():
@@ -246,6 +258,8 @@ def home():
 
     ai_summary = get_ai_summary()
     insight = ai_summary["operational_insight"]
+
+    advisor_response = get_advisor_response("health")
 
     last_analysis_time = automation_data["last_run"]
 
@@ -277,6 +291,7 @@ def home():
         ai_summary=ai_summary["summary"],
         ai_findings=ai_summary["findings"],
         ai_recommendation=ai_summary["recommendation"],
+	advisor_response=advisor_response,
         operational_insight=insight["insight"],
         insight_impact=insight["impact"],
         insight_confidence=insight["confidence"],

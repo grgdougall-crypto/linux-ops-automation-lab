@@ -162,7 +162,24 @@
         <h3>Recommended Action</h3>
         <p>{{ ai_recommendation }}</p>
     </div>
+<div class="card ai-card">
+    <h2>Operations Advisor</h2>
 
+    <h3>Quick Questions</h3>
+
+    <div class="advisor-buttons">
+        <button>Summarize System Health</button>
+        <button>Why Did Memory Increase?</button>
+        <button>Is Disk Usage A Concern?</button>
+        <button>What Should I Review Next?</button>
+    </div>
+
+    <h3>Assessment</h3>
+
+    <div class="advisor-response">
+        {{ advisor_response }}
+    </div>
+</div>
     <script>
         const chartLabels = {{ chart_labels | tojson }};
         const chartScores = {{ chart_scores | tojson }};
