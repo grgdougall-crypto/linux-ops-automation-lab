@@ -147,3 +147,26 @@ This project demonstrates:
 * GitHub workflow management
 * Technical documentation
 
+## Screenshots
+
+The following screenshots demonstrate the Linux automation scripts, generated reports, Python-based health analysis, and Git workflow used throughout the project.
+
+### Disk Usage Report
+
+<img src="screenshots/01_disk_usage_report.png" width="800">
+
+### Memory Usage Report
+
+<img src="screenshots/02_memory_usage_report.png" width="800">
+
+### Service Status Report
+
+<img src="screenshots/03_service_status_report.png" width="800">
+
+### System Health Summary
+
+<img src="screenshots/04_system_health_summary.png" width="800">
+
+### Git Commit History
+
+<img src="screenshots/05_git_history.png" width="800">
