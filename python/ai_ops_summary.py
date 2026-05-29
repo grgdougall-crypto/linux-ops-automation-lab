@@ -60,45 +60,54 @@ def get_disk_risk(disk_usage):
 
 
 def generate_local_ai_summary(data):
+    findings = []
+
     disk_risk = get_disk_risk(data["disk_usage"])
 
-    if disk_risk == "LOW" and data["automation_status"] == "SUCCESS":
-        summary = (
-            "System health appears stable. Disk usage is within normal limits, "
-            "memory usage is available for review, and the daily automation workflow "
-            "completed successfully."
-        )
-        recommendation = "Continue normal monitoring. No immediate remediation is required."
-        risk_level = "LOW"
-
+    if disk_risk == "LOW":
+        findings.append(f"Disk utilization remains healthy at {data['disk_usage']}.")
     elif disk_risk == "MEDIUM":
-        summary = (
-            "System health is generally stable, but disk usage is trending toward a "
-            "level that should be monitored."
+        findings.append(
+            f"Disk utilization is elevated at {data['disk_usage']} and should be monitored."
         )
-        recommendation = "Review older reports, backups, logs, and unnecessary files."
-        risk_level = "MEDIUM"
-
     elif disk_risk == "HIGH":
-        summary = (
-            "System health requires attention. Disk usage has reached a critical level "
-            "and may affect system stability if not addressed."
+        findings.append(
+            f"Disk utilization is critically high at {data['disk_usage']}."
         )
-        recommendation = "Investigate disk usage immediately and remove unnecessary files or expand storage."
-        risk_level = "HIGH"
-
     else:
-        summary = (
-            "System health could not be fully evaluated because some report data was unavailable."
-        )
-        recommendation = "Verify that system reports are being generated correctly."
+        findings.append("Disk utilization could not be evaluated from the latest report.")
+
+    if data["automation_status"] == "SUCCESS":
+        findings.append("Daily automation workflow completed successfully.")
+    else:
+        findings.append("Automation workflow requires review.")
+
+    if data["memory_used"] != "Unavailable":
+        findings.append(f"Current memory usage is {data['memory_used']}.")
+    else:
+        findings.append("Memory usage data was unavailable in the latest report.")
+
+    if disk_risk == "LOW" and data["automation_status"] == "SUCCESS":
+        risk_level = "LOW"
+        recommendation = "Continue normal monitoring. No immediate remediation is required."
+    elif disk_risk == "MEDIUM":
+        risk_level = "MEDIUM"
+        recommendation = "Review backups, logs, and unused files to control storage growth."
+    elif disk_risk == "HIGH":
+        risk_level = "HIGH"
+        recommendation = "Investigate disk usage immediately and review operational logs."
+    else:
         risk_level = "UNKNOWN"
+        recommendation = "Verify that reports and automation logs are being generated correctly."
+
+    summary = " ".join(findings)
 
     return {
         "provider": "Local Simulation",
         "summary": summary,
         "risk_level": risk_level,
-        "recommendation": recommendation
+        "recommendation": recommendation,
+        "findings": findings
     }
 
 
@@ -114,6 +123,10 @@ def main():
     print()
     print(f"Provider: {ai_summary['provider']}")
     print(f"Risk Level: {ai_summary['risk_level']}")
+    print()
+    print("Key Findings:")
+    for finding in ai_summary["findings"]:
+        print(f"- {finding}")
     print()
     print("Summary:")
     print(ai_summary["summary"])
