@@ -1,5 +1,6 @@
 from flask import Flask, render_template
 from pathlib import Path
+import socket
 
 app = Flask(__name__)
 
@@ -17,10 +18,13 @@ def home():
     else:
         latest_report = "No reports found"
 
+    report_count = len(reports)
+
     return render_template(
         "index.html",
-        hostname="trickydeb",
+        hostname=socket.gethostname(),
         latest_report=latest_report,
+        report_count=report_count,
         health_score="100/100",
         status="HEALTHY"
     )

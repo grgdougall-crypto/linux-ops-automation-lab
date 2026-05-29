@@ -8,24 +8,33 @@
 
     <h1>Linux Ops Dashboard</h1>
 
-    <div class="card">
-        <h2>Hostname</h2>
-        <p>{{ hostname }}</p>
+    <div class="dashboard-grid">
+
+        <div class="card">
+            <h2>Hostname</h2>
+            <p>{{ hostname }}</p>
+        </div>
+
+        <div class="card">
+            <h2>Health Score</h2>
+            <p>{{ health_score }}</p>
+        </div>
+
+        <div class="card">
+            <h2>Reports Generated</h2>
+            <p>{{ report_count }}</p>
+        </div>
+
+        <div class="card">
+            <h2>Status</h2>
+            <p>{{ status }}</p>
+        </div>
+
     </div>
 
-    <div class="card">
+    <div class="card report-card">
         <h2>Latest Report</h2>
         <p>{{ latest_report }}</p>
-    </div>
-
-    <div class="card">
-        <h2>Health Score</h2>
-        <p>{{ health_score }}</p>
-    </div>
-
-    <div class="card">
-        <h2>Status</h2>
-        <p>{{ status }}</p>
     </div>
 
 </body>
