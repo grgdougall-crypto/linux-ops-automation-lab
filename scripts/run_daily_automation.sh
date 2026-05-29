@@ -20,7 +20,11 @@ echo "Step 2: Running health score assessment..."
 python3 "$PROJECT_DIR/python/health_score.py" >> "$LOG_FILE" 2>&1
 
 echo
-echo "Step 3: Cleaning up old reports..."
+echo "Step 3: Running trend analysis..."
+python3 "$PROJECT_DIR/python/trend_analysis.py" >> "$LOG_FILE" 2>&1
+
+echo
+echo "Step 4: Cleaning up old reports..."
 "$PROJECT_DIR/scripts/cleanup_old_reports.sh" >> "$LOG_FILE" 2>&1
 
 echo "Workflow completed: $(date)" >> "$LOG_FILE"
