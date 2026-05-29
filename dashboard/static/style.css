@@ -64,3 +64,8 @@ h1 {
 canvas {
     max-height: 400px;
 }
+
+.ai-card {
+    max-width: 1000px;
+    margin: 20px auto;
+}
