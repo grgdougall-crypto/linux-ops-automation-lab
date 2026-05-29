@@ -235,3 +235,29 @@ canvas {
     padding: 12px;
     border-radius: 8px;
 }
+
+.active-btn {
+    background: #4caf50 !important;
+    color: white !important;
+    font-weight: bold;
+}
+
+.advisor-link {
+    display: inline-block;
+    padding: 10px 16px;
+    margin: 4px;
+    background: #e6e6e6;
+    color: #222;
+    text-decoration: none;
+    border-radius: 6px;
+    font-weight: 600;
+}
+
+.advisor-link:hover {
+    opacity: 0.9;
+}
+
+.active-btn {
+    background: #4caf50 !important;
+    color: white !important;
+}

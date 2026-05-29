@@ -25,7 +25,6 @@
         <div class="card">
             <h2>Disk Usage</h2>
             <p class="{{ disk_class }}">{{ disk_usage }}</p>
-
             <h3>Disk Health</h3>
             <p class="{{ disk_class }}">{{ disk_health }}</p>
         </div>
@@ -53,7 +52,6 @@
         <div class="card">
             <h2>Automation Status</h2>
             <p class="{{ automation_class }}">{{ automation_status }}</p>
-
             <h3>Last Run</h3>
             <p>{{ last_run }}</p>
         </div>
@@ -62,14 +60,12 @@
             <h2>Operations Timeline</h2>
 
             <div class="monitor-header">
-
                 <div class="monitor-status">
                     <span class="pulse-dot"></span>
                     MONITORING ACTIVE
                 </div>
 
                 <div class="monitor-metrics">
-
                     <div>
                         <strong>Last Analysis</strong><br>
                         {{ last_run }}
@@ -94,9 +90,7 @@
                         <strong>Next Scan</strong><br>
                         <span id="countdown">01:00</span>
                     </div>
-
                 </div>
-
             </div>
 
             <ul class="activity-list">
@@ -165,68 +159,79 @@
 
     <div class="card ai-card">
         <h2>Operations Advisor</h2>
-	<div class="advisor-status-header">
-    <div class="advisor-online">
-        <span class="pulse-dot"></span>
-        AI ADVISOR ONLINE
-    </div>
 
-    <div class="advisor-status-grid">
-        <div>
-            <strong>Current Persona</strong><br>
-            {{ advisor_persona }}
+        <div class="advisor-status-header">
+            <div class="advisor-online">
+                <span class="pulse-dot"></span>
+                AI ADVISOR ONLINE
+            </div>
+
+            <div class="advisor-status-grid">
+                <div>
+                    <strong>Current Persona</strong><br>
+                    {{ advisor_persona }}
+                </div>
+
+                <div>
+                    <strong>AI Engine</strong><br>
+                    {{ ai_provider }}
+                </div>
+
+                <div>
+                    <strong>Monitoring Mode</strong><br>
+                    Active
+                </div>
+
+                <div>
+                    <strong>Last Analysis</strong><br>
+                    {{ last_run }}
+                </div>
+            </div>
         </div>
 
-        <div>
-            <strong>AI Engine</strong><br>
-            {{ ai_provider }}
-        </div>
-
-        <div>
-            <strong>Monitoring Mode</strong><br>
-            Active
-        </div>
-
-        <div>
-            <strong>Last Analysis</strong><br>
-            {{ last_run }}
-        </div>
-    </div>
-</div>
-	<h3>Advisor Persona</h3>
+        <h3>Advisor Persona</h3>
 
 <div class="advisor-buttons">
-    <a class="{% if advisor_persona == 'operations' %}active{% endif %}" href="/?persona=operations&advisor={{ advisor_question }}">
+    <a class="advisor-link {% if advisor_persona == 'Operations Manager' %}active-btn{% endif %}"
+       href="/?persona=operations&advisor={{ advisor_question }}">
         Operations Manager
     </a>
 
-    <a class="{% if advisor_persona == 'security' %}active{% endif %}" href="/?persona=security&advisor={{ advisor_question }}">
+    <a class="advisor-link {% if advisor_persona == 'Security Analyst' %}active-btn{% endif %}"
+       href="/?persona=security&advisor={{ advisor_question }}">
         Security Analyst
     </a>
 
-    <a class="{% if advisor_persona == 'reliability' %}active{% endif %}" href="/?persona=reliability&advisor={{ advisor_question }}">
+    <a class="advisor-link {% if advisor_persona == 'Reliability Engineer' %}active-btn{% endif %}"
+       href="/?persona=reliability&advisor={{ advisor_question }}">
         Reliability Engineer
     </a>
 </div>
+
 <h3>Quick Questions</h3>
 
 <div class="advisor-buttons">
-    <a class="{% if advisor_question == 'health' %}active{% endif %}" href="/?persona={{ advisor_persona }}&advisor=health">
+    <a class="advisor-link {% if advisor_question == 'health' %}active-btn{% endif %}"
+       href="/?persona={{ request.args.get('persona', 'operations') }}&advisor=health">
         Summarize System Health
     </a>
 
-    <a class="{% if advisor_question == 'memory' %}active{% endif %}" href="/?persona={{ advisor_persona }}&advisor=memory">
+    <a class="advisor-link {% if advisor_question == 'memory' %}active-btn{% endif %}"
+       href="/?persona={{ request.args.get('persona', 'operations') }}&advisor=memory">
         Why Did Memory Change?
     </a>
 
-    <a class="{% if advisor_question == 'disk' %}active{% endif %}" href="/?persona={{ advisor_persona }}&advisor=disk">
+    <a class="advisor-link {% if advisor_question == 'disk' %}active-btn{% endif %}"
+       href="/?persona={{ request.args.get('persona', 'operations') }}&advisor=disk">
         Is Disk Usage A Concern?
     </a>
 
-    <a class="{% if advisor_question == 'review' %}active{% endif %}" href="/?persona={{ advisor_persona }}&advisor=review">
+    <a class="advisor-link {% if advisor_question == 'review' %}active-btn{% endif %}"
+       href="/?persona={{ request.args.get('persona', 'operations') }}&advisor=review">
         What Should I Review Next?
     </a>
-</div>
+</div>	
+
         <h3>Assessment</h3>
 
         <div class="advisor-response">

@@ -12,6 +12,12 @@ ADVISOR_RESPONSES = {
     "review": "Recommended review items include memory trends, report retention status, and automation workflow completion."
 }
 
+PERSONA_LABELS = {
+    "operations": "Operations Manager",
+    "security": "Security Analyst",
+    "reliability": "Reliability Engineer"
+}
+
 PROJECT_DIR = Path.home() / "linux-ops-automation-lab"
 REPORT_DIR = PROJECT_DIR / "reports"
 AUTOMATION_LOG = REPORT_DIR / "daily_automation.log"
@@ -385,6 +391,11 @@ def home():
 
     advisor_question = request.args.get("advisor", "health")
     advisor_persona = request.args.get("persona", "operations")
+    advisor_persona_label = PERSONA_LABELS.get(
+	advisor_persona,
+	"Operations Manager"
+    )
+
     advisor_response = get_advisor_response(
         advisor_question,
 	advisor_persona,
@@ -424,7 +435,7 @@ def home():
         ai_findings=ai_summary["findings"],
         ai_recommendation=ai_summary["recommendation"],
         advisor_question=advisor_question,
-	advisor_persona=advisor_persona,
+	advisor_persona=advisor_persona_label,
         advisor_title=advisor_response["title"],
         advisor_assessment=advisor_response["assessment"],
         advisor_impact=advisor_response["impact"],
