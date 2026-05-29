@@ -2,6 +2,7 @@
 <html>
 <head>
     <title>Linux Ops Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
@@ -59,6 +60,40 @@
         <h2>Latest Report</h2>
         <p>{{ latest_report }}</p>
     </div>
+
+    <div class="card chart-card">
+        <h2>Health Score History</h2>
+        <canvas id="healthScoreChart"></canvas>
+    </div>
+
+    <script>
+        const chartLabels = {{ chart_labels | tojson }};
+        const chartScores = {{ chart_scores | tojson }};
+
+        const ctx = document.getElementById('healthScoreChart');
+
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: chartLabels,
+                datasets: [{
+                    label: 'Health Score',
+                    data: chartScores,
+                    borderWidth: 2,
+                    tension: 0.3
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        min: 0,
+                        max: 100
+                    }
+                }
+            }
+        });
+    </script>
 
 </body>
 </html>

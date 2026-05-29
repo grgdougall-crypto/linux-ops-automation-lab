@@ -21,7 +21,11 @@ h1 {
     background: white;
     padding: 25px;
     border-radius: 10px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+.card h2 {
+    margin-top: 0;
 }
 
 .report-card {
@@ -29,8 +33,14 @@ h1 {
     margin: 20px auto;
 }
 
-.card h2 {
-    margin-top: 0;
+.chart-card {
+    max-width: 1000px;
+    margin: 20px auto;
+}
+
+.metric {
+    font-size: 1.4em;
+    font-weight: bold;
 }
 
 .status-good {
@@ -51,7 +61,6 @@ h1 {
     font-size: 1.2em;
 }
 
-.metric {
-    font-size: 1.4em;
-    font-weight: bold;
+canvas {
+    max-height: 400px;
 }
