@@ -25,14 +25,33 @@ def get_automation_info():
     return {"status": "CHECK LOG", "last_run": "Unknown"}
 
 
+def calculate_health_score(report_file):
+    score = 0
+
+    try:
+        content = report_file.read_text().lower()
+
+        if "mem:" in content:
+            score += 25
+
+        if "/dev/" in content:
+            score += 25
+
+        if "active" in content:
+            score += 50
+
+    except Exception:
+        return 0
+
+    return score
+
+
 def format_chart_label(report):
     timestamp = report.stem.replace("system_report_", "")
     parts = timestamp.split("_")
 
     if len(parts) == 2:
-        time_part = parts[1]
-        hour_minute = time_part[:5]
-        return hour_minute
+        return parts[1][:5]
 
     return timestamp
 
@@ -48,7 +67,8 @@ def get_latest_report_data():
             "memory_used": "Unavailable",
             "trend_status": "UNKNOWN",
             "chart_labels": [],
-            "chart_scores": []
+            "chart_scores": [],
+            "current_health_score": 0
         }
 
     latest_report = reports[-1]
@@ -70,7 +90,8 @@ def get_latest_report_data():
 
     recent_reports = reports[-7:]
     chart_labels = [format_chart_label(report) for report in recent_reports]
-    chart_scores = [100 for _ in recent_reports]
+    chart_scores = [calculate_health_score(report) for report in recent_reports]
+    current_health_score = calculate_health_score(latest_report)
 
     return {
         "latest_report": latest_report.name,
@@ -79,7 +100,8 @@ def get_latest_report_data():
         "memory_used": memory_used,
         "trend_status": "STABLE",
         "chart_labels": chart_labels,
-        "chart_scores": chart_scores
+        "chart_scores": chart_scores,
+        "current_health_score": current_health_score
     }
 
 
@@ -100,7 +122,7 @@ def home():
         last_run=automation_data["last_run"],
         chart_labels=report_data["chart_labels"],
         chart_scores=report_data["chart_scores"],
-        health_score="100/100",
+        health_score=f"{report_data['current_health_score']}/100",
         status="HEALTHY"
     )
 
