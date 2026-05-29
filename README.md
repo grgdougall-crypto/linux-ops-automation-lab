@@ -123,6 +123,10 @@ Screenshots will be added as the project evolves.
 * Create summarized output
 * Export formatted reports
 
+### trend_analysis.py
+
+Compares the oldest and newest generated system reports to identify basic trends in disk usage and memory usage.
+
 ### Automation
 
 * Scheduled execution using cron
