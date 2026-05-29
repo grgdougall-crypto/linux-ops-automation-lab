@@ -56,6 +56,41 @@
             <p>{{ last_run }}</p>
         </div>
 
+<div class="card activity-card">
+    <h2>Recent Activity</h2>
+<div class="monitor-header">
+
+    <div class="monitor-status">
+        <span class="pulse-dot"></span>
+        Monitoring Active
+    </div>
+
+    <div class="monitor-metrics">
+        <div>
+            <strong>Last Analysis</strong><br>
+            {{ last_run }}
+        </div>
+
+        <div>
+            <strong>Reports Processed</strong><br>
+            {{ report_count }}
+        </div>
+
+        <div>
+            <strong>AI Engine</strong><br>
+            {{ ai_provider }}
+        </div>
+    </div>
+
+</div>
+
+    <ul class="activity-list">
+        {% for activity in activity_feed %}
+            <li>{{ activity }}</li>
+        {% endfor %}
+    </ul>
+</div>
+
     </div>
 
     <div class="card report-card">

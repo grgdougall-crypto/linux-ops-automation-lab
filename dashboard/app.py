@@ -18,6 +18,44 @@ from ai_ops_summary import (
 )
 
 
+def get_recent_activity():
+    activities = []
+
+    if not AUTOMATION_LOG.exists():
+        return ["No automation activity found."]
+
+    log_lines = AUTOMATION_LOG.read_text().splitlines()
+
+    for line in reversed(log_lines):
+        if "Workflow completed:" in line:
+            timestamp = line.replace("Workflow completed:", "").strip()
+            activities.append(f"{timestamp} | Automation workflow completed")
+        elif "Workflow started:" in line:
+            timestamp = line.replace("Workflow started:", "").strip()
+            activities.append(f"{timestamp} | Automation workflow started")
+        elif "System report created:" in line:
+            activities.append("System report generated")
+        elif "Overall Score:" in line:
+            score = line.replace("Overall Score:", "").strip()
+            activities.append(f"Health score updated: {score}")
+        elif "Status:" in line:
+            status = line.replace("Status:", "").strip()
+            activities.append(f"System status evaluated: {status}")
+        elif "Trend Analysis" in line:
+            activities.append("Trend analysis completed")
+        elif "Report Retention Cleanup" in line:
+            activities.append("Report cleanup check completed")
+        elif "No cleanup needed." in line:
+            activities.append("No report cleanup required")
+
+    cleaned = []
+    for activity in activities:
+        if activity not in cleaned:
+            cleaned.append(activity)
+
+    return cleaned[:8]
+
+
 def get_automation_info():
     if not AUTOMATION_LOG.exists():
         return {"status": "NO LOG FOUND", "last_run": "Unknown", "class": "status-warning"}
@@ -182,8 +220,15 @@ def get_latest_report_data():
 def home():
     report_data = get_latest_report_data()
     automation_data = get_automation_info()
+    activity_feed = get_recent_activity()
+
     ai_summary = get_ai_summary()
     insight = ai_summary["operational_insight"]
+
+    last_analysis_time = automation_data["last_run"]
+
+    if len(last_analysis_time.split()) >= 5:
+        last_analysis_time = last_analysis_time.split()[3]
 
     return render_template(
         "index.html",
@@ -196,7 +241,8 @@ def home():
         trend_status=report_data["trend_status"],
         automation_status=automation_data["status"],
         automation_class=automation_data["class"],
-        last_run=automation_data["last_run"],
+        last_run=last_analysis_time,
+        activity_feed=activity_feed,
         chart_labels=report_data["chart_labels"],
         chart_scores=report_data["chart_scores"],
         health_score=f"{report_data['current_health_score']}/100",
