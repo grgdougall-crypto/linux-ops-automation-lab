@@ -162,24 +162,68 @@
         <h3>Recommended Action</h3>
         <p>{{ ai_recommendation }}</p>
     </div>
-<div class="card ai-card">
-    <h2>Operations Advisor</h2>
 
-    <h3>Quick Questions</h3>
+    <div class="card ai-card">
+        <h2>Operations Advisor</h2>
+	<h3>Advisor Persona</h3>
 
-    <div class="advisor-buttons">
-        <button>Summarize System Health</button>
-        <button>Why Did Memory Increase?</button>
-        <button>Is Disk Usage A Concern?</button>
-        <button>What Should I Review Next?</button>
-    </div>
+<div class="advisor-buttons">
+    <a class="{% if advisor_persona == 'operations' %}active{% endif %}" href="/?persona=operations&advisor={{ advisor_question }}">
+        Operations Manager
+    </a>
 
-    <h3>Assessment</h3>
+    <a class="{% if advisor_persona == 'security' %}active{% endif %}" href="/?persona=security&advisor={{ advisor_question }}">
+        Security Analyst
+    </a>
 
-    <div class="advisor-response">
-        {{ advisor_response }}
-    </div>
+    <a class="{% if advisor_persona == 'reliability' %}active{% endif %}" href="/?persona=reliability&advisor={{ advisor_question }}">
+        Reliability Engineer
+    </a>
 </div>
+<h3>Quick Questions</h3>
+
+<div class="advisor-buttons">
+    <a class="{% if advisor_question == 'health' %}active{% endif %}" href="/?persona={{ advisor_persona }}&advisor=health">
+        Summarize System Health
+    </a>
+
+    <a class="{% if advisor_question == 'memory' %}active{% endif %}" href="/?persona={{ advisor_persona }}&advisor=memory">
+        Why Did Memory Change?
+    </a>
+
+    <a class="{% if advisor_question == 'disk' %}active{% endif %}" href="/?persona={{ advisor_persona }}&advisor=disk">
+        Is Disk Usage A Concern?
+    </a>
+
+    <a class="{% if advisor_question == 'review' %}active{% endif %}" href="/?persona={{ advisor_persona }}&advisor=review">
+        What Should I Review Next?
+    </a>
+</div>
+        <h3>Assessment</h3>
+
+        <div class="advisor-response">
+            <h3>{{ advisor_title }}</h3>
+            <p>{{ advisor_assessment }}</p>
+
+            <div class="advisor-result-grid">
+                <div>
+                    <strong>Impact</strong><br>
+                    <span class="status-good">{{ advisor_impact }}</span>
+                </div>
+
+                <div>
+                    <strong>Confidence</strong><br>
+                    <span class="status-good">{{ advisor_confidence }}</span>
+                </div>
+
+                <div>
+                    <strong>Priority</strong><br>
+                    <span class="metric">{{ advisor_priority }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         const chartLabels = {{ chart_labels | tojson }};
         const chartScores = {{ chart_scores | tojson }};
