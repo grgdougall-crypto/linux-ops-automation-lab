@@ -14,8 +14,7 @@ sys.path.append(str(PROJECT_DIR / "python"))
 from ai_ops_summary import (
     get_latest_report,
     extract_report_data,
-    generate_local_ai_summary,
-    generate_operational_insight
+    generate_local_ai_summary
 )
 
 
@@ -184,7 +183,7 @@ def home():
     report_data = get_latest_report_data()
     automation_data = get_automation_info()
     ai_summary = get_ai_summary()
-    operational_insight = generate_operational_insight()
+    insight = ai_summary["operational_insight"]
 
     return render_template(
         "index.html",
@@ -210,7 +209,11 @@ def home():
         ai_summary=ai_summary["summary"],
         ai_findings=ai_summary["findings"],
         ai_recommendation=ai_summary["recommendation"],
-        operational_insight=operational_insight
+        operational_insight=insight["insight"],
+        insight_impact=insight["impact"],
+        insight_confidence=insight["confidence"],
+        insight_priority=insight["priority"],
+        insight_review=insight["review"]
     )
 
 

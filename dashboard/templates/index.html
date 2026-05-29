@@ -87,6 +87,28 @@
         <h3>Operational Insight</h3>
         <p>{{ operational_insight }}</p>
 
+        <div class="insight-grid">
+            <div>
+                <h3>Impact</h3>
+                <p class="status-good">{{ insight_impact }}</p>
+            </div>
+
+            <div>
+                <h3>Confidence</h3>
+                <p class="status-good">{{ insight_confidence }}</p>
+            </div>
+
+            <div>
+                <h3>Priority</h3>
+                <p class="metric">{{ insight_priority }}</p>
+            </div>
+
+            <div>
+                <h3>Suggested Review</h3>
+                <p>{{ insight_review }}</p>
+            </div>
+        </div>
+
         <h3>Recommended Action</h3>
         <p>{{ ai_recommendation }}</p>
     </div>

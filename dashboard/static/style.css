@@ -69,3 +69,16 @@ canvas {
     max-width: 1000px;
     margin: 20px auto;
 }
+
+.insight-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+    margin: 20px 0;
+}
+
+.insight-grid div {
+    background: #f4f4f4;
+    padding: 15px;
+    border-radius: 8px;
+}
