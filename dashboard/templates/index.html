@@ -1,13 +1,14 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Linux Ops Dashboard</title>
+    <title>Linux Ops Intelligence Center</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
 
-    <h1>Linux Ops Dashboard</h1>
+    <h1>Linux Ops Intelligence Center</h1>
+    <p class="subtitle">AI-assisted monitoring, analytics, and operations advisory</p>
 
     <div class="dashboard-grid">
 
@@ -24,6 +25,7 @@
         <div class="card">
             <h2>Disk Usage</h2>
             <p class="{{ disk_class }}">{{ disk_usage }}</p>
+
             <h3>Disk Health</h3>
             <p class="{{ disk_class }}">{{ disk_health }}</p>
         </div>
@@ -56,40 +58,53 @@
             <p>{{ last_run }}</p>
         </div>
 
-<div class="card activity-card">
-    <h2>Recent Activity</h2>
-<div class="monitor-header">
+        <div class="card activity-card">
+            <h2>Operations Timeline</h2>
 
-    <div class="monitor-status">
-        <span class="pulse-dot"></span>
-        Monitoring Active
-    </div>
+            <div class="monitor-header">
 
-    <div class="monitor-metrics">
-        <div>
-            <strong>Last Analysis</strong><br>
-            {{ last_run }}
+                <div class="monitor-status">
+                    <span class="pulse-dot"></span>
+                    MONITORING ACTIVE
+                </div>
+
+                <div class="monitor-metrics">
+
+                    <div>
+                        <strong>Last Analysis</strong><br>
+                        {{ last_run }}
+                    </div>
+
+                    <div>
+                        <strong>Reports Processed</strong><br>
+                        {{ report_count }}
+                    </div>
+
+                    <div>
+                        <strong>AI Engine</strong><br>
+                        {{ ai_provider }}
+                    </div>
+
+                    <div>
+                        <strong>System Status</strong><br>
+                        {{ status }}
+                    </div>
+
+                    <div>
+                        <strong>Next Scan</strong><br>
+                        <span id="countdown">01:00</span>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <ul class="activity-list">
+                {% for activity in activity_feed %}
+                    <li><span class="activity-dot"></span>{{ activity }}</li>
+                {% endfor %}
+            </ul>
         </div>
-
-        <div>
-            <strong>Reports Processed</strong><br>
-            {{ report_count }}
-        </div>
-
-        <div>
-            <strong>AI Engine</strong><br>
-            {{ ai_provider }}
-        </div>
-    </div>
-
-</div>
-
-    <ul class="activity-list">
-        {% for activity in activity_feed %}
-            <li>{{ activity }}</li>
-        {% endfor %}
-    </ul>
-</div>
 
     </div>
 
@@ -175,6 +190,21 @@
                 }
             }
         });
+
+        let seconds = 60;
+
+        setInterval(() => {
+            seconds--;
+
+            if (seconds < 0) {
+                seconds = 60;
+            }
+
+            const mins = String(Math.floor(seconds / 60)).padStart(2, '0');
+            const secs = String(seconds % 60).padStart(2, '0');
+
+            document.getElementById('countdown').innerText = `${mins}:${secs}`;
+        }, 1000);
     </script>
 
 </body>

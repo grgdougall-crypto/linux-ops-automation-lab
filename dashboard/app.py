@@ -18,6 +18,13 @@ from ai_ops_summary import (
 )
 
 
+def extract_time(timestamp):
+    try:
+        return timestamp.split()[3][:5]
+    except Exception:
+        return "--:--"
+
+
 def get_recent_activity():
     activities = []
 
@@ -25,28 +32,43 @@ def get_recent_activity():
         return ["No automation activity found."]
 
     log_lines = AUTOMATION_LOG.read_text().splitlines()
+    latest_time = "--:--"
+
+    for line in log_lines:
+        if "Workflow completed:" in line:
+            timestamp = line.replace("Workflow completed:", "").strip()
+            latest_time = extract_time(timestamp)
 
     for line in reversed(log_lines):
         if "Workflow completed:" in line:
             timestamp = line.replace("Workflow completed:", "").strip()
-            activities.append(f"{timestamp} | Automation workflow completed")
+            time_only = extract_time(timestamp)
+            activities.append(f"{time_only} ✓ Automation Workflow Completed")
+
         elif "Workflow started:" in line:
             timestamp = line.replace("Workflow started:", "").strip()
-            activities.append(f"{timestamp} | Automation workflow started")
+            time_only = extract_time(timestamp)
+            activities.append(f"{time_only} ✓ Automation Workflow Started")
+
         elif "System report created:" in line:
-            activities.append("System report generated")
+            activities.append(f"{latest_time} ✓ System Report Generated")
+
         elif "Overall Score:" in line:
             score = line.replace("Overall Score:", "").strip()
-            activities.append(f"Health score updated: {score}")
+            activities.append(f"{latest_time} ✓ Health Score Updated ({score})")
+
         elif "Status:" in line:
             status = line.replace("Status:", "").strip()
-            activities.append(f"System status evaluated: {status}")
+            activities.append(f"{latest_time} ✓ System Status Evaluated ({status})")
+
         elif "Trend Analysis" in line:
-            activities.append("Trend analysis completed")
+            activities.append(f"{latest_time} ✓ Trend Analysis Completed")
+
         elif "Report Retention Cleanup" in line:
-            activities.append("Report cleanup check completed")
+            activities.append(f"{latest_time} ✓ Cleanup Review Completed")
+
         elif "No cleanup needed." in line:
-            activities.append("No report cleanup required")
+            activities.append(f"{latest_time} ✓ No Cleanup Required")
 
     cleaned = []
     for activity in activities:
