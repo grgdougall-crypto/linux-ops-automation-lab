@@ -170,3 +170,7 @@ The following screenshots demonstrate the Linux automation scripts, generated re
 ### Git Commit History
 
 <img src="screenshots/05_git_history.png" width="800">
+
+### Health Score Assessment
+
+<img src="screenshots/06_health_score.png" width="800">
