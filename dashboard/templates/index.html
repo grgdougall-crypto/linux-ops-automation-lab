@@ -165,6 +165,34 @@
 
     <div class="card ai-card">
         <h2>Operations Advisor</h2>
+	<div class="advisor-status-header">
+    <div class="advisor-online">
+        <span class="pulse-dot"></span>
+        AI ADVISOR ONLINE
+    </div>
+
+    <div class="advisor-status-grid">
+        <div>
+            <strong>Current Persona</strong><br>
+            {{ advisor_persona }}
+        </div>
+
+        <div>
+            <strong>AI Engine</strong><br>
+            {{ ai_provider }}
+        </div>
+
+        <div>
+            <strong>Monitoring Mode</strong><br>
+            Active
+        </div>
+
+        <div>
+            <strong>Last Analysis</strong><br>
+            {{ last_run }}
+        </div>
+    </div>
+</div>
 	<h3>Advisor Persona</h3>
 
 <div class="advisor-buttons">

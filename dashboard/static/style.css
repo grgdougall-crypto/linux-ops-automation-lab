@@ -210,3 +210,28 @@ canvas {
         grid-template-columns: 1fr;
     }
 }
+
+.advisor-status-header {
+    background: #f4f4f4;
+    border-left: 4px solid #4caf50;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.advisor-online {
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+.advisor-status-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 12px;
+}
+
+.advisor-status-grid div {
+    background: #ffffff;
+    padding: 12px;
+    border-radius: 8px;
+}
