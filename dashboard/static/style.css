@@ -32,3 +32,26 @@ h1 {
 .card h2 {
     margin-top: 0;
 }
+
+.status-good {
+    color: green;
+    font-weight: bold;
+    font-size: 1.2em;
+}
+
+.status-warning {
+    color: orange;
+    font-weight: bold;
+    font-size: 1.2em;
+}
+
+.status-critical {
+    color: red;
+    font-weight: bold;
+    font-size: 1.2em;
+}
+
+.metric {
+    font-size: 1.4em;
+    font-weight: bold;
+}

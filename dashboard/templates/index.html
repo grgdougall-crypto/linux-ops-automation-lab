@@ -12,22 +12,32 @@
 
         <div class="card">
             <h2>Hostname</h2>
-            <p>{{ hostname }}</p>
+            <p class="metric">{{ hostname }}</p>
         </div>
 
         <div class="card">
             <h2>Health Score</h2>
-            <p>{{ health_score }}</p>
+            <p class="status-good">{{ health_score }}</p>
+        </div>
+
+        <div class="card">
+            <h2>Disk Usage</h2>
+            <p class="status-good">{{ disk_usage }}</p>
+        </div>
+
+        <div class="card">
+            <h2>Memory Used</h2>
+            <p class="metric">{{ memory_used }}</p>
         </div>
 
         <div class="card">
             <h2>Reports Generated</h2>
-            <p>{{ report_count }}</p>
+            <p class="metric">{{ report_count }}</p>
         </div>
 
         <div class="card">
             <h2>Status</h2>
-            <p>{{ status }}</p>
+            <p class="status-good">{{ status }}</p>
         </div>
 
     </div>
