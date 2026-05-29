@@ -18,12 +18,12 @@
 
         <div class="card">
             <h2>Health Score</h2>
-            <p class="status-good">{{ health_score }}</p>
+            <p class="{{ health_class }}">{{ health_score }}</p>
         </div>
 
         <div class="card">
             <h2>Disk Usage</h2>
-            <p class="status-good">{{ disk_usage }}</p>
+            <p class="{{ disk_class }}">{{ disk_usage }}</p>
         </div>
 
         <div class="card">
@@ -38,7 +38,7 @@
 
         <div class="card">
             <h2>Status</h2>
-            <p class="status-good">{{ status }}</p>
+            <p class="{{ status_class }}">{{ status }}</p>
         </div>
 
         <div class="card">
@@ -48,7 +48,7 @@
 
         <div class="card">
             <h2>Automation Status</h2>
-            <p class="status-good">{{ automation_status }}</p>
+            <p class="{{ automation_class }}">{{ automation_status }}</p>
 
             <h3>Last Run</h3>
             <p>{{ last_run }}</p>

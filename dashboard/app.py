@@ -11,7 +11,7 @@ AUTOMATION_LOG = REPORT_DIR / "daily_automation.log"
 
 def get_automation_info():
     if not AUTOMATION_LOG.exists():
-        return {"status": "NO LOG FOUND", "last_run": "Unknown"}
+        return {"status": "NO LOG FOUND", "last_run": "Unknown", "class": "status-warning"}
 
     log_content = AUTOMATION_LOG.read_text().splitlines()
 
@@ -19,10 +19,11 @@ def get_automation_info():
         if "Workflow completed:" in line:
             return {
                 "status": "SUCCESS",
-                "last_run": line.replace("Workflow completed:", "").strip()
+                "last_run": line.replace("Workflow completed:", "").strip(),
+                "class": "status-good"
             }
 
-    return {"status": "CHECK LOG", "last_run": "Unknown"}
+    return {"status": "CHECK LOG", "last_run": "Unknown", "class": "status-warning"}
 
 
 def calculate_health_score(report_file):
@@ -44,6 +45,28 @@ def calculate_health_score(report_file):
         return 0
 
     return score
+
+
+def get_status_class_from_score(score):
+    if score >= 90:
+        return "status-good"
+    if score >= 60:
+        return "status-warning"
+    return "status-critical"
+
+
+def get_status_class_from_percent(percent_text):
+    try:
+        percent = int(percent_text.replace("%", ""))
+
+        if percent >= 90:
+            return "status-critical"
+        if percent >= 70:
+            return "status-warning"
+        return "status-good"
+
+    except ValueError:
+        return "status-warning"
 
 
 def format_chart_label(report):
@@ -68,7 +91,10 @@ def get_latest_report_data():
             "trend_status": "UNKNOWN",
             "chart_labels": [],
             "chart_scores": [],
-            "current_health_score": 0
+            "current_health_score": 0,
+            "health_class": "status-warning",
+            "disk_class": "status-warning",
+            "status_class": "status-warning"
         }
 
     latest_report = reports[-1]
@@ -93,6 +119,16 @@ def get_latest_report_data():
     chart_scores = [calculate_health_score(report) for report in recent_reports]
     current_health_score = calculate_health_score(latest_report)
 
+    health_class = get_status_class_from_score(current_health_score)
+    disk_class = get_status_class_from_percent(disk_usage)
+
+    if current_health_score >= 90:
+        status = "HEALTHY"
+    elif current_health_score >= 60:
+        status = "NEEDS REVIEW"
+    else:
+        status = "AT RISK"
+
     return {
         "latest_report": latest_report.name,
         "report_count": len(reports),
@@ -101,7 +137,11 @@ def get_latest_report_data():
         "trend_status": "STABLE",
         "chart_labels": chart_labels,
         "chart_scores": chart_scores,
-        "current_health_score": current_health_score
+        "current_health_score": current_health_score,
+        "health_class": health_class,
+        "disk_class": disk_class,
+        "status": status,
+        "status_class": health_class
     }
 
 
@@ -119,11 +159,15 @@ def home():
         memory_used=report_data["memory_used"],
         trend_status=report_data["trend_status"],
         automation_status=automation_data["status"],
+        automation_class=automation_data["class"],
         last_run=automation_data["last_run"],
         chart_labels=report_data["chart_labels"],
         chart_scores=report_data["chart_scores"],
         health_score=f"{report_data['current_health_score']}/100",
-        status="HEALTHY"
+        health_class=report_data["health_class"],
+        disk_class=report_data["disk_class"],
+        status=report_data["status"],
+        status_class=report_data["status_class"]
     )
 
 
