@@ -11,7 +11,12 @@ AUTOMATION_LOG = REPORT_DIR / "daily_automation.log"
 
 sys.path.append(str(PROJECT_DIR / "python"))
 
-from ai_ops_summary import get_latest_report, extract_report_data, generate_local_ai_summary
+from ai_ops_summary import (
+    get_latest_report,
+    extract_report_data,
+    generate_local_ai_summary,
+    generate_operational_insight
+)
 
 
 def get_automation_info():
@@ -179,6 +184,7 @@ def home():
     report_data = get_latest_report_data()
     automation_data = get_automation_info()
     ai_summary = get_ai_summary()
+    operational_insight = generate_operational_insight()
 
     return render_template(
         "index.html",
@@ -203,7 +209,8 @@ def home():
         ai_risk_level=ai_summary["risk_level"],
         ai_summary=ai_summary["summary"],
         ai_findings=ai_summary["findings"],
-        ai_recommendation=ai_summary["recommendation"]
+        ai_recommendation=ai_summary["recommendation"],
+        operational_insight=operational_insight
     )
 
 
