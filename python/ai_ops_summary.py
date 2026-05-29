@@ -11,9 +11,11 @@ def get_latest_report():
     reports = sorted(REPORT_DIR.glob("system_report_*.txt"))
     return reports[-1] if reports else None
 
+
 def get_recent_reports():
     reports = sorted(REPORT_DIR.glob("system_report_*.txt"))
     return reports[-7:]
+
 
 def extract_report_data(report_file):
     data = {
@@ -62,6 +64,80 @@ def get_disk_risk(disk_usage):
         return "UNKNOWN"
 
 
+def generate_operational_insight():
+    reports = get_recent_reports()
+
+    if len(reports) < 2:
+        return {
+            "insight": "Not enough reports available for trend analysis.",
+            "impact": "UNKNOWN",
+            "confidence": "LOW",
+            "priority": "P3",
+            "review": "Generate additional reports and review again."
+        }
+
+    oldest = extract_report_data(reports[0])
+    newest = extract_report_data(reports[-1])
+
+    try:
+        old_mem = float(oldest["memory_used"].replace("Gi", ""))
+        new_mem = float(newest["memory_used"].replace("Gi", ""))
+
+        difference = round(new_mem - old_mem, 1)
+
+        if difference >= 2:
+            return {
+                "insight": (
+                    f"Memory usage increased by {difference} Gi across recent reports. "
+                    "This may indicate growing workload or resource pressure."
+                ),
+                "impact": "MEDIUM",
+                "confidence": "HIGH",
+                "priority": "P2",
+                "review": "Review memory usage again within 24 hours."
+            }
+
+        if difference > 0:
+            return {
+                "insight": (
+                    f"Memory usage increased by {difference} Gi across recent reports. "
+                    "Continue monitoring for sustained growth."
+                ),
+                "impact": "LOW",
+                "confidence": "HIGH",
+                "priority": "P4",
+                "review": "Review during the next scheduled monitoring cycle."
+            }
+
+        if difference < 0:
+            return {
+                "insight": (
+                    f"Memory usage decreased by {abs(difference)} Gi across recent reports."
+                ),
+                "impact": "LOW",
+                "confidence": "HIGH",
+                "priority": "P4",
+                "review": "No immediate follow-up required."
+            }
+
+        return {
+            "insight": "Memory usage remained stable across recent reports.",
+            "impact": "LOW",
+            "confidence": "HIGH",
+            "priority": "P4",
+            "review": "Continue normal monitoring."
+        }
+
+    except Exception:
+        return {
+            "insight": "Operational insight unavailable due to insufficient report data.",
+            "impact": "UNKNOWN",
+            "confidence": "LOW",
+            "priority": "P3",
+            "review": "Verify report data and rerun the analysis."
+        }
+
+
 def generate_local_ai_summary(data):
     findings = []
 
@@ -104,56 +180,23 @@ def generate_local_ai_summary(data):
         recommendation = "Verify that reports and automation logs are being generated correctly."
 
     summary = " ".join(findings)
+    operational_insight = generate_operational_insight()
 
     return {
         "provider": "Local Simulation",
         "summary": summary,
         "risk_level": risk_level,
         "recommendation": recommendation,
-        "findings": findings
+        "findings": findings,
+        "operational_insight": operational_insight
     }
 
-def generate_operational_insight():
-    reports = get_recent_reports()
-
-    if len(reports) < 2:
-        return "Not enough reports available for trend analysis."
-
-    oldest = extract_report_data(reports[0])
-    newest = extract_report_data(reports[-1])
-
-    try:
-        old_mem = float(oldest["memory_used"].replace("Gi", ""))
-        new_mem = float(newest["memory_used"].replace("Gi", ""))
-
-        difference = round(new_mem - old_mem, 1)
-
-        if difference > 0:
-            return (
-                f"Memory usage increased by {difference} Gi across recent reports. "
-                "Continue monitoring for sustained growth."
-            )
-
-        elif difference < 0:
-            return (
-                f"Memory usage decreased by {abs(difference)} Gi across recent reports."
-            )
-
-        else:
-            return (
-                "Memory usage remained stable across recent reports."
-            )
-
-    except Exception:
-        return (
-            "Operational insight unavailable due to insufficient report data."
-        )
 
 def main():
     latest_report = get_latest_report()
     data = extract_report_data(latest_report)
     ai_summary = generate_local_ai_summary(data)
-    insight = generate_operational_insight()
+    insight = ai_summary["operational_insight"]
 
     print("=" * 40)
     print(" Linux Ops Automation Lab")
@@ -170,11 +213,16 @@ def main():
     print("Summary:")
     print(ai_summary["summary"])
     print()
+    print("Operational Insight:")
+    print(insight["insight"])
+    print()
+    print(f"Impact: {insight['impact']}")
+    print(f"Confidence: {insight['confidence']}")
+    print(f"Priority: {insight['priority']}")
+    print(f"Suggested Review: {insight['review']}")
+    print()
     print("Recommended Action:")
     print(ai_summary["recommendation"])
-    print()
-    print("Operational Insight:")
-    print(insight)
 
 
 if __name__ == "__main__":
