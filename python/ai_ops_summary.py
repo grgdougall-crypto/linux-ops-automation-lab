@@ -11,6 +11,9 @@ def get_latest_report():
     reports = sorted(REPORT_DIR.glob("system_report_*.txt"))
     return reports[-1] if reports else None
 
+def get_recent_reports():
+    reports = sorted(REPORT_DIR.glob("system_report_*.txt"))
+    return reports[-7:]
 
 def extract_report_data(report_file):
     data = {
@@ -110,11 +113,47 @@ def generate_local_ai_summary(data):
         "findings": findings
     }
 
+def generate_operational_insight():
+    reports = get_recent_reports()
+
+    if len(reports) < 2:
+        return "Not enough reports available for trend analysis."
+
+    oldest = extract_report_data(reports[0])
+    newest = extract_report_data(reports[-1])
+
+    try:
+        old_mem = float(oldest["memory_used"].replace("Gi", ""))
+        new_mem = float(newest["memory_used"].replace("Gi", ""))
+
+        difference = round(new_mem - old_mem, 1)
+
+        if difference > 0:
+            return (
+                f"Memory usage increased by {difference} Gi across recent reports. "
+                "Continue monitoring for sustained growth."
+            )
+
+        elif difference < 0:
+            return (
+                f"Memory usage decreased by {abs(difference)} Gi across recent reports."
+            )
+
+        else:
+            return (
+                "Memory usage remained stable across recent reports."
+            )
+
+    except Exception:
+        return (
+            "Operational insight unavailable due to insufficient report data."
+        )
 
 def main():
     latest_report = get_latest_report()
     data = extract_report_data(latest_report)
     ai_summary = generate_local_ai_summary(data)
+    insight = generate_operational_insight()
 
     print("=" * 40)
     print(" Linux Ops Automation Lab")
@@ -133,6 +172,9 @@ def main():
     print()
     print("Recommended Action:")
     print(ai_summary["recommendation"])
+    print()
+    print("Operational Insight:")
+    print(insight)
 
 
 if __name__ == "__main__":
