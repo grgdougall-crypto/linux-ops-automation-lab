@@ -260,21 +260,45 @@ def get_latest_report_data():
     }
 
 
-def get_advisor_response(question_type, persona, report_data, ai_summary, insight):
-    persona_titles = {
-        "operations": "Operations Manager",
-        "security": "Security Analyst",
-        "reliability": "Reliability Engineer"
+def calculate_advisor_risk(report_data, insight):
+    score = report_data["current_health_score"]
+
+    try:
+        disk_percent = int(report_data["disk_usage"].replace("%", ""))
+    except Exception:
+        disk_percent = 0
+
+    if disk_percent >= 90 or score < 60:
+        return {
+            "impact": "HIGH",
+            "confidence": insight["confidence"],
+            "priority": "P1"
+        }
+
+    if disk_percent >= 70 or score < 90:
+        return {
+            "impact": "MEDIUM",
+            "confidence": insight["confidence"],
+            "priority": "P3"
+        }
+
+    return {
+        "impact": "LOW",
+        "confidence": insight["confidence"],
+        "priority": "P4"
     }
 
-    persona_name = persona_titles.get(persona, "Operations Manager")
+
+def get_advisor_response(question_type, persona, report_data, ai_summary, insight):
+    persona_name = PERSONA_LABELS.get(persona, "Operations Manager")
+    risk = calculate_advisor_risk(report_data, insight)
 
     if question_type == "health":
         if persona == "security":
             assessment = (
                 f"No abnormal resource indicators are detected. Current health score is "
                 f"{report_data['current_health_score']}/100, system status is "
-                f"{report_data['status']}, and risk remains {ai_summary['risk_level']}."
+                f"{report_data['status']}, and risk remains {risk['impact']}."
             )
         elif persona == "reliability":
             assessment = (
@@ -292,16 +316,17 @@ def get_advisor_response(question_type, persona, report_data, ai_summary, insigh
         return {
             "title": f"{persona_name}: System Health Assessment",
             "assessment": assessment,
-            "impact": ai_summary["risk_level"],
-            "confidence": insight["confidence"],
-            "priority": insight["priority"]
+            "impact": risk["impact"],
+            "confidence": risk["confidence"],
+            "priority": risk["priority"]
         }
 
     if question_type == "memory":
         if persona == "security":
             assessment = (
                 f"Memory usage is currently {report_data['memory_used']}. "
-                f"{insight['insight']} No suspicious memory-related behavior is indicated by the current dashboard data."
+                f"{insight['insight']} No suspicious memory-related behavior is indicated "
+                f"by the current dashboard data."
             )
         elif persona == "reliability":
             assessment = (
@@ -317,9 +342,9 @@ def get_advisor_response(question_type, persona, report_data, ai_summary, insigh
         return {
             "title": f"{persona_name}: Memory Trend Assessment",
             "assessment": assessment,
-            "impact": insight["impact"],
-            "confidence": insight["confidence"],
-            "priority": insight["priority"]
+            "impact": risk["impact"],
+            "confidence": risk["confidence"],
+            "priority": risk["priority"]
         }
 
     if question_type == "disk":
@@ -342,9 +367,9 @@ def get_advisor_response(question_type, persona, report_data, ai_summary, insigh
         return {
             "title": f"{persona_name}: Disk Utilization Assessment",
             "assessment": assessment,
-            "impact": ai_summary["risk_level"],
-            "confidence": insight["confidence"],
-            "priority": "P4"
+            "impact": risk["impact"],
+            "confidence": risk["confidence"],
+            "priority": risk["priority"]
         }
 
     if question_type == "review":
@@ -367,9 +392,9 @@ def get_advisor_response(question_type, persona, report_data, ai_summary, insigh
         return {
             "title": f"{persona_name}: Recommended Review Plan",
             "assessment": assessment,
-            "impact": insight["impact"],
-            "confidence": insight["confidence"],
-            "priority": insight["priority"]
+            "impact": risk["impact"],
+            "confidence": risk["confidence"],
+            "priority": risk["priority"]
         }
 
     return {
@@ -379,6 +404,7 @@ def get_advisor_response(question_type, persona, report_data, ai_summary, insigh
         "confidence": "LOW",
         "priority": "P3"
     }
+
 
 @app.route("/")
 def home():
@@ -391,14 +417,15 @@ def home():
 
     advisor_question = request.args.get("advisor", "health")
     advisor_persona = request.args.get("persona", "operations")
+
     advisor_persona_label = PERSONA_LABELS.get(
-	advisor_persona,
-	"Operations Manager"
+        advisor_persona,
+        "Operations Manager"
     )
 
     advisor_response = get_advisor_response(
         advisor_question,
-	advisor_persona,
+        advisor_persona,
         report_data,
         ai_summary,
         insight
@@ -435,12 +462,13 @@ def home():
         ai_findings=ai_summary["findings"],
         ai_recommendation=ai_summary["recommendation"],
         advisor_question=advisor_question,
-	advisor_persona=advisor_persona_label,
+        advisor_persona=advisor_persona_label,
         advisor_title=advisor_response["title"],
         advisor_assessment=advisor_response["assessment"],
         advisor_impact=advisor_response["impact"],
         advisor_confidence=advisor_response["confidence"],
         advisor_priority=advisor_response["priority"],
+	executive_summary=f"System status is {report_data['status']} with a health score of {report_data['current_health_score']}/100. Current risk is {advisor_response['impact']}. Recommended action: {ai_summary['recommendation']}",
         operational_insight=insight["insight"],
         insight_impact=insight["impact"],
         insight_confidence=insight["confidence"],

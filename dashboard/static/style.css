@@ -57,8 +57,7 @@ h1 {
 .report-card,
 .chart-card,
 .ai-card {
-    max-width: 1000px;
-    margin: 20px auto;
+    margin: 20px 0;
 }
 
 canvas {
@@ -66,7 +65,7 @@ canvas {
 }
 
 .activity-card {
-    grid-column: span 2;
+    grid-column: 1 / -1;
 }
 
 .activity-list {
@@ -260,4 +259,49 @@ canvas {
 .active-btn {
     background: #4caf50 !important;
     color: white !important;
+}
+
+.executive-card {
+    border-left: 4px solid #4caf50;
+}
+
+.executive-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 12px;
+    margin-top: 15px;
+}
+
+.executive-grid div {
+    background: #f4f4f4;
+    padding: 12px;
+    border-radius: 8px;
+}
+
+body {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 30px;
+}
+
+.dashboard-grid {
+    max-width: 100%;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+}
+
+.report-card,
+.chart-card,
+.executive-card,
+.ai-card {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+.chart-card {
+    margin: 20px 0;
+}
+
+.chart-card canvas {
+    max-height: 320px;
 }

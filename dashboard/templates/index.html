@@ -111,6 +111,34 @@
         <h2>Health Score History</h2>
         <canvas id="healthScoreChart"></canvas>
     </div>
+	
+<div class="card executive-card">
+    <h2>Executive Summary</h2>
+
+    <p>{{ executive_summary }}</p>
+
+    <div class="executive-grid">
+        <div>
+            <strong>System Status</strong><br>
+            <span class="{{ status_class }}">{{ status }}</span>
+        </div>
+
+        <div>
+            <strong>Risk Level</strong><br>
+            <span class="status-good">{{ advisor_impact }}</span>
+        </div>
+
+        <div>
+            <strong>Priority</strong><br>
+            <span class="metric">{{ advisor_priority }}</span>
+        </div>
+
+        <div>
+            <strong>AI Engine</strong><br>
+            {{ ai_provider }}
+        </div>
+    </div>
+</div>
 
     <div class="card ai-card">
         <h2>AI Operations Brief</h2>
