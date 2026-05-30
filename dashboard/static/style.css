@@ -326,3 +326,28 @@ body {
 .recommendations-table th {
     background: #f4f4f4;
 }
+
+.observations-card {
+    border-left: 4px solid #4caf50;
+}
+
+.observation-list {
+    list-style: none;
+    padding-left: 0;
+    margin-top: 15px;
+}
+
+.observation-list li {
+    padding: 12px;
+    border-bottom: 1px solid #ddd;
+    display: flex;
+    gap: 14px;
+    align-items: center;
+}
+
+.observation-time {
+    font-family: monospace;
+    font-weight: bold;
+    color: #008000;
+    min-width: 55px;
+}

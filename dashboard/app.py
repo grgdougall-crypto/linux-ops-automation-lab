@@ -5,13 +5,6 @@ import sys
 
 app = Flask(__name__)
 
-ADVISOR_RESPONSES = {
-    "health": "System health remains strong.",
-    "memory": "Memory utilization changed across recent reports.",
-    "disk": "Disk utilization is currently low and does not present an operational concern.",
-    "review": "Recommended review items include memory trends, report retention status, and automation workflow completion."
-}
-
 PERSONA_LABELS = {
     "operations": "Operations Manager",
     "security": "Security Analyst",
@@ -54,37 +47,27 @@ def get_recent_activity():
 
     for line in reversed(log_lines):
         if "Workflow completed:" in line:
-            timestamp = line.replace("Workflow completed:", "").strip()
-            time_only = extract_time(timestamp)
+            time_only = extract_time(line.replace("Workflow completed:", "").strip())
             activities.append(f"{time_only} ✓ Automation Workflow Completed")
-
         elif "Workflow started:" in line:
-            timestamp = line.replace("Workflow started:", "").strip()
-            time_only = extract_time(timestamp)
+            time_only = extract_time(line.replace("Workflow started:", "").strip())
             activities.append(f"{time_only} ✓ Automation Workflow Started")
-
         elif "System report created:" in line:
             activities.append(f"{latest_time} ✓ System Report Generated")
-
         elif "Overall Score:" in line:
             score = line.replace("Overall Score:", "").strip()
             activities.append(f"{latest_time} ✓ Health Score Updated ({score})")
-
         elif "Status:" in line:
             status = line.replace("Status:", "").strip()
             activities.append(f"{latest_time} ✓ System Status Evaluated ({status})")
-
         elif "Trend Analysis" in line:
             activities.append(f"{latest_time} ✓ Trend Analysis Completed")
-
         elif "Report Retention Cleanup" in line:
             activities.append(f"{latest_time} ✓ Cleanup Review Completed")
-
         elif "No cleanup needed." in line:
             activities.append(f"{latest_time} ✓ No Cleanup Required")
 
     cleaned = []
-
     for activity in activities:
         if activity not in cleaned:
             cleaned.append(activity)
@@ -94,11 +77,7 @@ def get_recent_activity():
 
 def get_automation_info():
     if not AUTOMATION_LOG.exists():
-        return {
-            "status": "NO LOG FOUND",
-            "last_run": "Unknown",
-            "class": "status-warning"
-        }
+        return {"status": "NO LOG FOUND", "last_run": "Unknown", "class": "status-warning"}
 
     log_content = AUTOMATION_LOG.read_text().splitlines()
 
@@ -110,11 +89,7 @@ def get_automation_info():
                 "class": "status-good"
             }
 
-    return {
-        "status": "CHECK LOG",
-        "last_run": "Unknown",
-        "class": "status-warning"
-    }
+    return {"status": "CHECK LOG", "last_run": "Unknown", "class": "status-warning"}
 
 
 def calculate_health_score(report_file):
@@ -125,10 +100,8 @@ def calculate_health_score(report_file):
 
         if "mem:" in content:
             score += 25
-
         if "/dev/" in content:
             score += 25
-
         if "active" in content:
             score += 50
 
@@ -156,7 +129,7 @@ def get_status_class_from_percent(percent_text):
             return "status-warning"
         return "status-good"
 
-    except ValueError:
+    except Exception:
         return "status-warning"
 
 
@@ -170,7 +143,7 @@ def get_disk_health(percent_text):
             return "WARNING"
         return "NORMAL"
 
-    except ValueError:
+    except Exception:
         return "UNKNOWN"
 
 
@@ -269,24 +242,12 @@ def calculate_advisor_risk(report_data, insight):
         disk_percent = 0
 
     if disk_percent >= 90 or score < 60:
-        return {
-            "impact": "HIGH",
-            "confidence": insight["confidence"],
-            "priority": "P1"
-        }
+        return {"impact": "HIGH", "confidence": insight["confidence"], "priority": "P1"}
 
     if disk_percent >= 70 or score < 90:
-        return {
-            "impact": "MEDIUM",
-            "confidence": insight["confidence"],
-            "priority": "P3"
-        }
+        return {"impact": "MEDIUM", "confidence": insight["confidence"], "priority": "P3"}
 
-    return {
-        "impact": "LOW",
-        "confidence": insight["confidence"],
-        "priority": "P4"
-    }
+    return {"impact": "LOW", "confidence": insight["confidence"], "priority": "P4"}
 
 
 def get_advisor_response(question_type, persona, report_data, ai_summary, insight):
@@ -325,8 +286,7 @@ def get_advisor_response(question_type, persona, report_data, ai_summary, insigh
         if persona == "security":
             assessment = (
                 f"Memory usage is currently {report_data['memory_used']}. "
-                f"{insight['insight']} No suspicious memory-related behavior is indicated "
-                f"by the current dashboard data."
+                f"{insight['insight']} No suspicious memory-related behavior is indicated by the current dashboard data."
             )
         elif persona == "reliability":
             assessment = (
@@ -405,6 +365,7 @@ def get_advisor_response(question_type, persona, report_data, ai_summary, insigh
         "priority": "P3"
     }
 
+
 @app.route("/")
 def home():
     report_data = get_latest_report_data()
@@ -417,10 +378,7 @@ def home():
     advisor_question = request.args.get("advisor", "health")
     advisor_persona = request.args.get("persona", "operations")
 
-    advisor_persona_label = PERSONA_LABELS.get(
-        advisor_persona,
-        "Operations Manager"
-    )
+    advisor_persona_label = PERSONA_LABELS.get(advisor_persona, "Operations Manager")
 
     advisor_response = get_advisor_response(
         advisor_question,
@@ -503,6 +461,31 @@ def home():
     if len(last_analysis_time.split()) >= 5:
         last_analysis_time = last_analysis_time.split()[3]
 
+    advisor_observations = [
+        {
+            "time": last_analysis_time,
+            "message": f"{advisor_persona_label} reviewed {advisor_question} data"
+        },
+        {
+            "time": last_analysis_time,
+            "message": f"Risk level evaluated as {advisor_response['impact']}"
+        },
+        {
+            "time": last_analysis_time,
+            "message": f"Priority assigned as {advisor_response['priority']}"
+        },
+        {
+            "time": last_analysis_time,
+            "message": "Automation workflow completed successfully"
+        }
+    ]
+
+    executive_summary = (
+        f"System status is {report_data['status']} with a health score of "
+        f"{report_data['current_health_score']}/100. Current risk is "
+        f"{advisor_response['impact']}. Recommended action: {ai_summary['recommendation']}"
+    )
+
     return render_template(
         "index.html",
         hostname=socket.gethostname(),
@@ -535,14 +518,16 @@ def home():
         advisor_impact=advisor_response["impact"],
         advisor_confidence=advisor_response["confidence"],
         advisor_priority=advisor_response["priority"],
+        advisor_observations=advisor_observations,
         recommendations=recommendations,
-        executive_summary=f"System status is {report_data['status']} with a health score of {report_data['current_health_score']}/100. Current risk is {advisor_response['impact']}. Recommended action: {ai_summary['recommendation']}",
+        executive_summary=executive_summary,
         operational_insight=insight["insight"],
         insight_impact=insight["impact"],
         insight_confidence=insight["confidence"],
         insight_priority=insight["priority"],
         insight_review=insight["review"]
     )
+
 
 if __name__ == "__main__":
     app.run(debug=True)

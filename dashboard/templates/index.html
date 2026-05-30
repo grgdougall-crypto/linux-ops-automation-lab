@@ -111,60 +111,60 @@
         <h2>Health Score History</h2>
         <canvas id="healthScoreChart"></canvas>
     </div>
-	
-<div class="card executive-card">
-    <h2>Executive Summary</h2>
 
-    <p>{{ executive_summary }}</p>
+    <div class="card executive-card">
+        <h2>Executive Summary</h2>
 
-    <div class="executive-grid">
-        <div>
-            <strong>System Status</strong><br>
-            <span class="{{ status_class }}">{{ status }}</span>
-        </div>
+        <p>{{ executive_summary }}</p>
 
-        <div>
-            <strong>Risk Level</strong><br>
-            <span class="status-good">{{ advisor_impact }}</span>
-        </div>
+        <div class="executive-grid">
+            <div>
+                <strong>System Status</strong><br>
+                <span class="{{ status_class }}">{{ status }}</span>
+            </div>
 
-        <div>
-            <strong>Priority</strong><br>
-            <span class="metric">{{ advisor_priority }}</span>
-        </div>
+            <div>
+                <strong>Risk Level</strong><br>
+                <span class="status-good">{{ advisor_impact }}</span>
+            </div>
 
-        <div>
-            <strong>AI Engine</strong><br>
-            {{ ai_provider }}
+            <div>
+                <strong>Priority</strong><br>
+                <span class="metric">{{ advisor_priority }}</span>
+            </div>
+
+            <div>
+                <strong>AI Engine</strong><br>
+                {{ ai_provider }}
+            </div>
         </div>
     </div>
-</div>
 
-<div class="card recommendations-card">
-    <h2>Operations Recommendations</h2>
+    <div class="card recommendations-card">
+        <h2>Operations Recommendations</h2>
 
-    <table class="recommendations-table">
-        <thead>
-            <tr>
-                <th>Recommended Action</th>
-                <th>Priority</th>
-                <th>Owner</th>
-                <th>Status</th>
-            </tr>
-        </thead>
-
-        <tbody>
-            {% for recommendation in recommendations %}
+        <table class="recommendations-table">
+            <thead>
                 <tr>
-                    <td>{{ recommendation.action }}</td>
-                    <td>{{ recommendation.priority }}</td>
-                    <td>{{ recommendation.owner }}</td>
-                    <td>{{ recommendation.status }}</td>
+                    <th>Recommended Action</th>
+                    <th>Priority</th>
+                    <th>Owner</th>
+                    <th>Status</th>
                 </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</div>
+            </thead>
+
+            <tbody>
+                {% for recommendation in recommendations %}
+                    <tr>
+                        <td>{{ recommendation.action }}</td>
+                        <td>{{ recommendation.priority }}</td>
+                        <td>{{ recommendation.owner }}</td>
+                        <td>{{ recommendation.status }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 
     <div class="card ai-card">
         <h2>AI Operations Brief</h2>
@@ -211,6 +211,19 @@
         <p>{{ ai_recommendation }}</p>
     </div>
 
+    <div class="card observations-card">
+        <h2>Advisor Observations</h2>
+
+        <ul class="observation-list">
+            {% for observation in advisor_observations %}
+                <li>
+                    <span class="observation-time">{{ observation.time }}</span>
+                    <span>{{ observation.message }}</span>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+
     <div class="card ai-card">
         <h2>Operations Advisor</h2>
 
@@ -245,46 +258,46 @@
 
         <h3>Advisor Persona</h3>
 
-<div class="advisor-buttons">
-    <a class="advisor-link {% if advisor_persona == 'Operations Manager' %}active-btn{% endif %}"
-       href="/?persona=operations&advisor={{ advisor_question }}">
-        Operations Manager
-    </a>
+        <div class="advisor-buttons">
+            <a class="advisor-link {% if advisor_persona == 'Operations Manager' %}active-btn{% endif %}"
+               href="/?persona=operations&advisor={{ advisor_question }}">
+                Operations Manager
+            </a>
 
-    <a class="advisor-link {% if advisor_persona == 'Security Analyst' %}active-btn{% endif %}"
-       href="/?persona=security&advisor={{ advisor_question }}">
-        Security Analyst
-    </a>
+            <a class="advisor-link {% if advisor_persona == 'Security Analyst' %}active-btn{% endif %}"
+               href="/?persona=security&advisor={{ advisor_question }}">
+                Security Analyst
+            </a>
 
-    <a class="advisor-link {% if advisor_persona == 'Reliability Engineer' %}active-btn{% endif %}"
-       href="/?persona=reliability&advisor={{ advisor_question }}">
-        Reliability Engineer
-    </a>
-</div>
+            <a class="advisor-link {% if advisor_persona == 'Reliability Engineer' %}active-btn{% endif %}"
+               href="/?persona=reliability&advisor={{ advisor_question }}">
+                Reliability Engineer
+            </a>
+        </div>
 
-<h3>Quick Questions</h3>
+        <h3>Quick Questions</h3>
 
-<div class="advisor-buttons">
-    <a class="advisor-link {% if advisor_question == 'health' %}active-btn{% endif %}"
-       href="/?persona={{ request.args.get('persona', 'operations') }}&advisor=health">
-        Summarize System Health
-    </a>
+        <div class="advisor-buttons">
+            <a class="advisor-link {% if advisor_question == 'health' %}active-btn{% endif %}"
+               href="/?persona={{ request.args.get('persona', 'operations') }}&advisor=health">
+                Summarize System Health
+            </a>
 
-    <a class="advisor-link {% if advisor_question == 'memory' %}active-btn{% endif %}"
-       href="/?persona={{ request.args.get('persona', 'operations') }}&advisor=memory">
-        Why Did Memory Change?
-    </a>
+            <a class="advisor-link {% if advisor_question == 'memory' %}active-btn{% endif %}"
+               href="/?persona={{ request.args.get('persona', 'operations') }}&advisor=memory">
+                Why Did Memory Change?
+            </a>
 
-    <a class="advisor-link {% if advisor_question == 'disk' %}active-btn{% endif %}"
-       href="/?persona={{ request.args.get('persona', 'operations') }}&advisor=disk">
-        Is Disk Usage A Concern?
-    </a>
+            <a class="advisor-link {% if advisor_question == 'disk' %}active-btn{% endif %}"
+               href="/?persona={{ request.args.get('persona', 'operations') }}&advisor=disk">
+                Is Disk Usage A Concern?
+            </a>
 
-    <a class="advisor-link {% if advisor_question == 'review' %}active-btn{% endif %}"
-       href="/?persona={{ request.args.get('persona', 'operations') }}&advisor=review">
-        What Should I Review Next?
-    </a>
-</div>	
+            <a class="advisor-link {% if advisor_question == 'review' %}active-btn{% endif %}"
+               href="/?persona={{ request.args.get('persona', 'operations') }}&advisor=review">
+                What Should I Review Next?
+            </a>
+        </div>
 
         <h3>Assessment</h3>
 
