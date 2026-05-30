@@ -305,3 +305,24 @@ body {
 .chart-card canvas {
     max-height: 320px;
 }
+
+.recommendations-card {
+    border-left: 4px solid #4caf50;
+}
+
+.recommendations-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+}
+
+.recommendations-table th,
+.recommendations-table td {
+    text-align: left;
+    padding: 12px;
+    border-bottom: 1px solid #ddd;
+}
+
+.recommendations-table th {
+    background: #f4f4f4;
+}

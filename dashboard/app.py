@@ -405,7 +405,6 @@ def get_advisor_response(question_type, persona, report_data, ai_summary, insigh
         "priority": "P3"
     }
 
-
 @app.route("/")
 def home():
     report_data = get_latest_report_data()
@@ -430,6 +429,74 @@ def home():
         ai_summary,
         insight
     )
+
+    recommendations = []
+
+    health_score = report_data["current_health_score"]
+
+    try:
+        disk_usage = int(str(report_data["disk_usage"]).replace("%", ""))
+    except Exception:
+        disk_usage = 0
+
+    try:
+        memory_used = float(str(report_data["memory_used"]).replace("Gi", ""))
+    except Exception:
+        memory_used = 0
+
+    if health_score < 80:
+        recommendations.append({
+            "action": "Investigate Health Score Degradation",
+            "priority": "P1",
+            "owner": "Security",
+            "status": "Open"
+        })
+
+    if disk_usage > 80:
+        recommendations.append({
+            "action": "Review Disk Capacity",
+            "priority": "P2",
+            "owner": "Operations",
+            "status": "Open"
+        })
+
+    if memory_used > 8:
+        recommendations.append({
+            "action": "Investigate Memory Consumption",
+            "priority": "P2",
+            "owner": "Reliability",
+            "status": "Open"
+        })
+
+    if automation_data["status"] != "SUCCESS":
+        recommendations.append({
+            "action": "Investigate Automation Failure",
+            "priority": "P1",
+            "owner": "Operations",
+            "status": "Open"
+        })
+
+    if len(recommendations) == 0:
+        recommendations.append({
+            "action": "Continue Monitoring",
+            "priority": "P4",
+            "owner": "Operations",
+            "status": "Active"
+        })
+
+        recommendations.append({
+            "action": "Review Memory Trends",
+            "priority": "P4",
+            "owner": "Reliability",
+            "status": "Scheduled"
+        })
+
+        recommendations.append({
+            "action": "Validate Report Retention",
+            "priority": "P4",
+            "owner": "Security",
+            "status": "Scheduled"
+        })
 
     last_analysis_time = automation_data["last_run"]
 
@@ -468,14 +535,14 @@ def home():
         advisor_impact=advisor_response["impact"],
         advisor_confidence=advisor_response["confidence"],
         advisor_priority=advisor_response["priority"],
-	executive_summary=f"System status is {report_data['status']} with a health score of {report_data['current_health_score']}/100. Current risk is {advisor_response['impact']}. Recommended action: {ai_summary['recommendation']}",
+        recommendations=recommendations,
+        executive_summary=f"System status is {report_data['status']} with a health score of {report_data['current_health_score']}/100. Current risk is {advisor_response['impact']}. Recommended action: {ai_summary['recommendation']}",
         operational_insight=insight["insight"],
         insight_impact=insight["impact"],
         insight_confidence=insight["confidence"],
         insight_priority=insight["priority"],
         insight_review=insight["review"]
     )
-
 
 if __name__ == "__main__":
     app.run(debug=True)

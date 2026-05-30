@@ -140,6 +140,32 @@
     </div>
 </div>
 
+<div class="card recommendations-card">
+    <h2>Operations Recommendations</h2>
+
+    <table class="recommendations-table">
+        <thead>
+            <tr>
+                <th>Recommended Action</th>
+                <th>Priority</th>
+                <th>Owner</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for recommendation in recommendations %}
+                <tr>
+                    <td>{{ recommendation.action }}</td>
+                    <td>{{ recommendation.priority }}</td>
+                    <td>{{ recommendation.owner }}</td>
+                    <td>{{ recommendation.status }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
     <div class="card ai-card">
         <h2>AI Operations Brief</h2>
 
