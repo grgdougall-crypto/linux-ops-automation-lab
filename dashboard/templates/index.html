@@ -224,86 +224,44 @@
         </ul>
     </div>
 
-    <div class="card ai-card">
-        <h2>Operations Advisor</h2>
+    <div class="card command-center-card">
+        <h2>AI Command Center</h2>
 
-        <div class="advisor-status-header">
-            <div class="advisor-online">
-                <span class="pulse-dot"></span>
-                AI ADVISOR ONLINE
+        <div class="persona-grid">
+            <div class="persona-panel active-panel" data-persona="operations">
+                <h3>Operations Manager</h3>
+                <p>Status: {{ status }}</p>
+                <p>Priority: {{ advisor_priority }}</p>
+                <p>Action: Continue Monitoring</p>
             </div>
 
-            <div class="advisor-status-grid">
-                <div>
-                    <strong>Current Persona</strong><br>
-                    {{ advisor_persona }}
-                </div>
+            <div class="persona-panel" data-persona="security">
+                <h3>Security Analyst</h3>
+                <p>Risk: {{ advisor_impact }}</p>
+                <p>Automation: {{ automation_status }}</p>
+                <p>Retention: Scheduled</p>
+            </div>
 
-                <div>
-                    <strong>AI Engine</strong><br>
-                    {{ ai_provider }}
-                </div>
+            <div class="persona-panel" data-persona="reliability">
+                <h3>Reliability Engineer</h3>
+                <p>Disk: {{ disk_usage }}</p>
+                <p>Memory: {{ memory_used }}</p>
+                <p>Trend: {{ trend_status }}</p>
+            </div>
 
-                <div>
-                    <strong>Monitoring Mode</strong><br>
-                    Active
-                </div>
-
-                <div>
-                    <strong>Last Analysis</strong><br>
-                    {{ last_run }}
-                </div>
+            <div class="persona-panel" data-persona="executive">
+                <h3>Executive View</h3>
+                <p>Health: {{ health_score }}</p>
+                <p>Risk: {{ advisor_impact }}</p>
+                <p>AI Engine: {{ ai_provider }}</p>
             </div>
         </div>
 
-        <h3>Advisor Persona</h3>
-
-        <div class="advisor-buttons">
-            <a class="advisor-link {% if advisor_persona == 'Operations Manager' %}active-btn{% endif %}"
-               href="/?persona=operations&advisor={{ advisor_question }}">
-                Operations Manager
-            </a>
-
-            <a class="advisor-link {% if advisor_persona == 'Security Analyst' %}active-btn{% endif %}"
-               href="/?persona=security&advisor={{ advisor_question }}">
-                Security Analyst
-            </a>
-
-            <a class="advisor-link {% if advisor_persona == 'Reliability Engineer' %}active-btn{% endif %}"
-               href="/?persona=reliability&advisor={{ advisor_question }}">
-                Reliability Engineer
-            </a>
-        </div>
-
-        <h3>Quick Questions</h3>
-
-        <div class="advisor-buttons">
-            <a class="advisor-link {% if advisor_question == 'health' %}active-btn{% endif %}"
-               href="/?persona={{ request.args.get('persona', 'operations') }}&advisor=health">
-                Summarize System Health
-            </a>
-
-            <a class="advisor-link {% if advisor_question == 'memory' %}active-btn{% endif %}"
-               href="/?persona={{ request.args.get('persona', 'operations') }}&advisor=memory">
-                Why Did Memory Change?
-            </a>
-
-            <a class="advisor-link {% if advisor_question == 'disk' %}active-btn{% endif %}"
-               href="/?persona={{ request.args.get('persona', 'operations') }}&advisor=disk">
-                Is Disk Usage A Concern?
-            </a>
-
-            <a class="advisor-link {% if advisor_question == 'review' %}active-btn{% endif %}"
-               href="/?persona={{ request.args.get('persona', 'operations') }}&advisor=review">
-                What Should I Review Next?
-            </a>
-        </div>
-
-        <h3>Assessment</h3>
-
-        <div class="advisor-response">
-            <h3>{{ advisor_title }}</h3>
-            <p>{{ advisor_assessment }}</p>
+        <div class="command-detail">
+            <h3 id="command-title">Operations Manager Assessment</h3>
+            <p id="command-text">
+                System operations remain stable. Current status is {{ status }}, priority is {{ advisor_priority }}, and the recommended action is to continue monitoring.
+            </p>
 
             <div class="advisor-result-grid">
                 <div>
@@ -366,6 +324,39 @@
 
             document.getElementById('countdown').innerText = `${mins}:${secs}`;
         }, 1000);
+
+        const commandContent = {
+            operations: {
+                title: "Operations Manager Assessment",
+                text: "System operations remain stable. Current status is {{ status }}, priority is {{ advisor_priority }}, and the recommended action is to continue monitoring."
+            },
+            security: {
+                title: "Security Analyst Assessment",
+                text: "No abnormal operational indicators are detected. Automation status is {{ automation_status }}, risk remains {{ advisor_impact }}, and report retention is scheduled for review."
+            },
+            reliability: {
+                title: "Reliability Engineer Assessment",
+                text: "Resource posture appears stable. Disk usage is {{ disk_usage }}, memory usage is {{ memory_used }}, and trend status is {{ trend_status }}."
+            },
+            executive: {
+                title: "Executive Summary Assessment",
+                text: "System health is {{ health_score }} with current risk rated {{ advisor_impact }}. AI engine is {{ ai_provider }} and no immediate executive escalation is required."
+            }
+        };
+
+        document.querySelectorAll(".persona-panel").forEach(panel => {
+            panel.addEventListener("click", () => {
+                document.querySelectorAll(".persona-panel").forEach(p => {
+                    p.classList.remove("active-panel");
+                });
+
+                panel.classList.add("active-panel");
+
+                const persona = panel.dataset.persona;
+                document.getElementById("command-title").innerText = commandContent[persona].title;
+                document.getElementById("command-text").innerText = commandContent[persona].text;
+            });
+        });
     </script>
 
 </body>

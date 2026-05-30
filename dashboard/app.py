@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template
 from pathlib import Path
 import socket
 import sys
@@ -8,7 +8,8 @@ app = Flask(__name__)
 PERSONA_LABELS = {
     "operations": "Operations Manager",
     "security": "Security Analyst",
-    "reliability": "Reliability Engineer"
+    "reliability": "Reliability Engineer",
+    "executive": "Executive View"
 }
 
 PROJECT_DIR = Path.home() / "linux-ops-automation-lab"
@@ -42,8 +43,7 @@ def get_recent_activity():
 
     for line in log_lines:
         if "Workflow completed:" in line:
-            timestamp = line.replace("Workflow completed:", "").strip()
-            latest_time = extract_time(timestamp)
+            latest_time = extract_time(line.replace("Workflow completed:", "").strip())
 
     for line in reversed(log_lines):
         if "Workflow completed:" in line:
@@ -250,144 +250,7 @@ def calculate_advisor_risk(report_data, insight):
     return {"impact": "LOW", "confidence": insight["confidence"], "priority": "P4"}
 
 
-def get_advisor_response(question_type, persona, report_data, ai_summary, insight):
-    persona_name = PERSONA_LABELS.get(persona, "Operations Manager")
-    risk = calculate_advisor_risk(report_data, insight)
-
-    if question_type == "health":
-        if persona == "security":
-            assessment = (
-                f"No abnormal resource indicators are detected. Current health score is "
-                f"{report_data['current_health_score']}/100, system status is "
-                f"{report_data['status']}, and risk remains {risk['impact']}."
-            )
-        elif persona == "reliability":
-            assessment = (
-                f"Current service indicators show stable operating conditions. Health score is "
-                f"{report_data['current_health_score']}/100 and operational status is "
-                f"{report_data['status']}."
-            )
-        else:
-            assessment = (
-                f"System health remains strong. Current health score is "
-                f"{report_data['current_health_score']}/100 and operational status is "
-                f"{report_data['status']}."
-            )
-
-        return {
-            "title": f"{persona_name}: System Health Assessment",
-            "assessment": assessment,
-            "impact": risk["impact"],
-            "confidence": risk["confidence"],
-            "priority": risk["priority"]
-        }
-
-    if question_type == "memory":
-        if persona == "security":
-            assessment = (
-                f"Memory usage is currently {report_data['memory_used']}. "
-                f"{insight['insight']} No suspicious memory-related behavior is indicated by the current dashboard data."
-            )
-        elif persona == "reliability":
-            assessment = (
-                f"Memory usage is currently {report_data['memory_used']}. "
-                f"{insight['insight']} Resource pressure appears manageable under current conditions."
-            )
-        else:
-            assessment = (
-                f"Current memory usage is {report_data['memory_used']}. "
-                f"{insight['insight']}"
-            )
-
-        return {
-            "title": f"{persona_name}: Memory Trend Assessment",
-            "assessment": assessment,
-            "impact": risk["impact"],
-            "confidence": risk["confidence"],
-            "priority": risk["priority"]
-        }
-
-    if question_type == "disk":
-        if persona == "security":
-            assessment = (
-                f"Disk utilization is {report_data['disk_usage']} with disk health marked as "
-                f"{report_data['disk_health']}. No storage-related anomaly is indicated."
-            )
-        elif persona == "reliability":
-            assessment = (
-                f"Disk capacity remains stable at {report_data['disk_usage']}. "
-                f"Disk health is {report_data['disk_health']}, so no reliability concern is present."
-            )
-        else:
-            assessment = (
-                f"Disk utilization is currently {report_data['disk_usage']} and disk health is "
-                f"{report_data['disk_health']}. No immediate disk-related concern is detected."
-            )
-
-        return {
-            "title": f"{persona_name}: Disk Utilization Assessment",
-            "assessment": assessment,
-            "impact": risk["impact"],
-            "confidence": risk["confidence"],
-            "priority": risk["priority"]
-        }
-
-    if question_type == "review":
-        if persona == "security":
-            assessment = (
-                f"Review automation completion, report retention, and resource trends. "
-                f"Suggested review: {insight['review']}"
-            )
-        elif persona == "reliability":
-            assessment = (
-                f"Focus review on trend stability, service health, and resource capacity. "
-                f"Suggested review: {insight['review']}"
-            )
-        else:
-            assessment = (
-                f"Suggested review: {insight['review']} "
-                f"Recommended action: {ai_summary['recommendation']}"
-            )
-
-        return {
-            "title": f"{persona_name}: Recommended Review Plan",
-            "assessment": assessment,
-            "impact": risk["impact"],
-            "confidence": risk["confidence"],
-            "priority": risk["priority"]
-        }
-
-    return {
-        "title": f"{persona_name}: Operations Advisor",
-        "assessment": "Select a question to generate an operational assessment.",
-        "impact": "UNKNOWN",
-        "confidence": "LOW",
-        "priority": "P3"
-    }
-
-
-@app.route("/")
-def home():
-    report_data = get_latest_report_data()
-    automation_data = get_automation_info()
-    activity_feed = get_recent_activity()
-
-    ai_summary = get_ai_summary()
-    insight = ai_summary["operational_insight"]
-
-    advisor_question = request.args.get("advisor", "health")
-    advisor_persona = request.args.get("persona", "operations")
-
-    advisor_persona_label = PERSONA_LABELS.get(advisor_persona, "Operations Manager")
-
-    advisor_response = get_advisor_response(
-        advisor_question,
-        advisor_persona,
-        report_data,
-        ai_summary,
-        insight
-    )
-
+def build_recommendations(report_data, automation_data):
     recommendations = []
 
     health_score = report_data["current_health_score"]
@@ -456,6 +319,21 @@ def home():
             "status": "Scheduled"
         })
 
+    return recommendations
+
+
+@app.route("/")
+def home():
+    report_data = get_latest_report_data()
+    automation_data = get_automation_info()
+    activity_feed = get_recent_activity()
+
+    ai_summary = get_ai_summary()
+    insight = ai_summary["operational_insight"]
+    risk = calculate_advisor_risk(report_data, insight)
+
+    recommendations = build_recommendations(report_data, automation_data)
+
     last_analysis_time = automation_data["last_run"]
 
     if len(last_analysis_time.split()) >= 5:
@@ -464,26 +342,26 @@ def home():
     advisor_observations = [
         {
             "time": last_analysis_time,
-            "message": f"{advisor_persona_label} reviewed {advisor_question} data"
+            "message": "Operations Manager generated operational review"
         },
         {
             "time": last_analysis_time,
-            "message": f"Risk level evaluated as {advisor_response['impact']}"
+            "message": f"Security Analyst evaluated risk as {risk['impact']}"
         },
         {
             "time": last_analysis_time,
-            "message": f"Priority assigned as {advisor_response['priority']}"
+            "message": "Reliability Engineer reviewed resource posture"
         },
         {
             "time": last_analysis_time,
-            "message": "Automation workflow completed successfully"
+            "message": "Executive summary refreshed"
         }
     ]
 
     executive_summary = (
         f"System status is {report_data['status']} with a health score of "
         f"{report_data['current_health_score']}/100. Current risk is "
-        f"{advisor_response['impact']}. Recommended action: {ai_summary['recommendation']}"
+        f"{risk['impact']}. Recommended action: {ai_summary['recommendation']}"
     )
 
     return render_template(
@@ -502,6 +380,7 @@ def home():
         chart_labels=report_data["chart_labels"],
         chart_scores=report_data["chart_scores"],
         health_score=f"{report_data['current_health_score']}/100",
+        health_score_raw=report_data["current_health_score"],
         health_class=report_data["health_class"],
         disk_class=report_data["disk_class"],
         status=report_data["status"],
@@ -511,13 +390,9 @@ def home():
         ai_summary=ai_summary["summary"],
         ai_findings=ai_summary["findings"],
         ai_recommendation=ai_summary["recommendation"],
-        advisor_question=advisor_question,
-        advisor_persona=advisor_persona_label,
-        advisor_title=advisor_response["title"],
-        advisor_assessment=advisor_response["assessment"],
-        advisor_impact=advisor_response["impact"],
-        advisor_confidence=advisor_response["confidence"],
-        advisor_priority=advisor_response["priority"],
+        advisor_impact=risk["impact"],
+        advisor_confidence=risk["confidence"],
+        advisor_priority=risk["priority"],
         advisor_observations=advisor_observations,
         recommendations=recommendations,
         executive_summary=executive_summary,
