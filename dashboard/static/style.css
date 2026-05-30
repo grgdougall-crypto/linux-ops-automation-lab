@@ -603,3 +603,212 @@ cat <<'EOF' >> dashboard/static/style.css
     margin-top: 20px;
 }
 EOF
+
+/* Command Center Layout */
+
+.command-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.header-status {
+    padding: 12px 18px;
+    border-radius: 999px;
+    background: rgba(57, 255, 136, 0.08);
+    border: 1px solid var(--border-soft);
+    color: var(--accent-green);
+    font-weight: bold;
+    box-shadow: 0 0 18px rgba(57, 255, 136, 0.18);
+}
+
+.command-summary-strip {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(140px, 1fr));
+    gap: 14px;
+    margin-bottom: 22px;
+}
+
+.command-summary-strip div {
+    background: linear-gradient(145deg, var(--bg-card), var(--bg-card-soft));
+    border: 1px solid var(--border-soft);
+    border-radius: 14px;
+    padding: 14px;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.32);
+}
+
+.command-summary-strip span {
+    display: block;
+    color: var(--text-muted);
+    font-size: 13px;
+    margin-bottom: 6px;
+}
+
+.command-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(280px, 1fr));
+    gap: 18px;
+}
+
+.command-quadrant {
+    background: linear-gradient(145deg, var(--bg-card), var(--bg-card-soft));
+    border: 1px solid var(--border-soft);
+    border-left: 4px solid var(--accent-blue);
+    border-radius: 18px;
+    padding: 20px;
+    min-height: 210px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: 0.25s ease;
+    box-shadow: 0 14px 34px rgba(0, 0, 0, 0.35);
+}
+
+.command-quadrant:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 0 24px rgba(74, 163, 255, 0.25);
+}
+
+.command-quadrant h2 {
+    margin-top: 0;
+    margin-bottom: 4px;
+}
+
+.quadrant-label {
+    color: var(--text-muted);
+    margin-top: 0;
+    font-size: 14px;
+}
+
+.quadrant-metrics {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(120px, 1fr));
+    gap: 12px;
+    margin: 16px 0;
+}
+
+.quadrant-metrics div {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border-soft);
+    border-radius: 12px;
+    padding: 12px;
+}
+
+.quadrant-metrics span {
+    display: block;
+    color: var(--text-muted);
+    font-size: 12px;
+    margin-bottom: 5px;
+}
+
+.quadrant-text {
+    color: var(--text-main);
+    line-height: 1.45;
+}
+
+.command-quadrant.active-panel {
+    border-left-color: var(--accent-green);
+    box-shadow: 0 0 28px rgba(57, 255, 136, 0.28);
+}
+
+.command-quadrant.active-panel::before {
+    content: "ACTIVE";
+    position: absolute;
+    top: 14px;
+    right: 16px;
+    color: var(--accent-green);
+    font-size: 11px;
+    letter-spacing: 1px;
+}
+
+.command-quadrant::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -45%;
+    width: 45%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--accent-blue), transparent);
+    animation: scanLine 5s infinite;
+}
+
+.command-detail-panel {
+    margin: 20px 0;
+    background: linear-gradient(145deg, var(--bg-card), var(--bg-card-soft));
+    border: 1px solid var(--border-soft);
+    border-left: 4px solid var(--accent-green);
+    border-radius: 18px;
+    padding: 20px;
+    box-shadow: 0 14px 34px rgba(0, 0, 0, 0.35);
+}
+
+.lower-command-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(280px, 1fr));
+    gap: 18px;
+}
+
+.lower-command-grid .card {
+    margin: 0;
+}
+
+@media (max-width: 900px) {
+    .command-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .command-summary-strip,
+    .command-grid,
+    .lower-command-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Wide Command Center Layout */
+
+body {
+    max-width: 1700px;
+    width: 95%;
+    margin: 0 auto;
+}
+
+.command-header,
+.command-summary-strip,
+.command-grid,
+.command-detail-panel,
+.lower-command-grid {
+    width: 100%;
+}
+
+.command-grid {
+    grid-template-columns: repeat(2, minmax(420px, 1fr));
+}
+
+.lower-command-grid {
+    grid-template-columns: repeat(2, minmax(420px, 1fr));
+}
+
+.chart-card {
+    grid-column: span 1;
+}
+
+.activity-card {
+    grid-column: span 1;
+}
+
+@media (min-width: 1400px) {
+    .command-grid {
+        gap: 24px;
+    }
+
+    .lower-command-grid {
+        gap: 24px;
+    }
+
+    .command-quadrant {
+        min-height: 240px;
+    }
+}

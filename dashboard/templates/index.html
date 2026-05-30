@@ -7,280 +7,214 @@
 </head>
 <body>
 
-    <h1>Linux Ops Intelligence Center</h1>
-    <p class="subtitle">AI-assisted monitoring, analytics, and operations advisory</p>
-
-    <div class="dashboard-grid">
-
-        <div class="card">
-            <h2>Hostname</h2>
-            <p class="metric">{{ hostname }}</p>
+    <header class="command-header">
+        <div>
+            <h1>Linux Ops Intelligence Center</h1>
+            <p class="subtitle">AI-assisted monitoring, analytics, and operations advisory</p>
         </div>
 
-        <div class="card">
-            <h2>Health Score</h2>
-            <p class="{{ health_class }}">{{ health_score }}</p>
+        <div class="header-status">
+            <span class="pulse-dot"></span>
+            AI ONLINE
+        </div>
+    </header>
+
+    <section class="command-summary-strip">
+        <div>
+            <span>System</span>
+            <strong class="{{ status_class }}">{{ status }}</strong>
         </div>
 
-        <div class="card">
-            <h2>Disk Usage</h2>
-            <p class="{{ disk_class }}">{{ disk_usage }}</p>
-            <h3>Disk Health</h3>
-            <p class="{{ disk_class }}">{{ disk_health }}</p>
+        <div>
+            <span>Health</span>
+            <strong class="{{ health_class }}">{{ health_score }}</strong>
         </div>
 
-        <div class="card">
-            <h2>Memory Used</h2>
-            <p class="metric">{{ memory_used }}</p>
+        <div>
+            <span>Risk</span>
+            <strong class="status-good">{{ advisor_impact }}</strong>
         </div>
 
-        <div class="card">
-            <h2>Reports Generated</h2>
-            <p class="metric">{{ report_count }}</p>
+        <div>
+            <span>Priority</span>
+            <strong class="metric">{{ advisor_priority }}</strong>
         </div>
 
-        <div class="card">
-            <h2>Status</h2>
-            <p class="{{ status_class }}">{{ status }}</p>
+        <div>
+            <span>Next Scan</span>
+            <strong id="countdown">01:00</strong>
         </div>
+    </section>
 
-        <div class="card">
-            <h2>Trend Status</h2>
-            <p class="status-good">{{ trend_status }}</p>
-        </div>
+    <main class="command-grid">
 
-        <div class="card">
-            <h2>Automation Status</h2>
-            <p class="{{ automation_class }}">{{ automation_status }}</p>
-            <h3>Last Run</h3>
-            <p>{{ last_run }}</p>
-        </div>
+        <section class="command-quadrant active-panel" data-persona="operations">
+            <h2>Operations Manager</h2>
+            <p class="quadrant-label">Operational Control</p>
 
-        <div class="card activity-card">
-            <h2>Operations Timeline</h2>
-
-            <div class="monitor-header">
-                <div class="monitor-status">
-                    <span class="pulse-dot"></span>
-                    MONITORING ACTIVE
+            <div class="quadrant-metrics">
+                <div>
+                    <span>Status</span>
+                    <strong class="{{ status_class }}">{{ status }}</strong>
                 </div>
 
-                <div class="monitor-metrics">
-                    <div>
-                        <strong>Last Analysis</strong><br>
-                        {{ last_run }}
-                    </div>
-
-                    <div>
-                        <strong>Reports Processed</strong><br>
-                        {{ report_count }}
-                    </div>
-
-                    <div>
-                        <strong>AI Engine</strong><br>
-                        {{ ai_provider }}
-                    </div>
-
-                    <div>
-                        <strong>System Status</strong><br>
-                        {{ status }}
-                    </div>
-
-                    <div>
-                        <strong>Next Scan</strong><br>
-                        <span id="countdown">01:00</span>
-                    </div>
+                <div>
+                    <span>Priority</span>
+                    <strong class="metric">{{ advisor_priority }}</strong>
                 </div>
             </div>
 
-            <ul class="activity-list">
-                {% for activity in activity_feed %}
-                    <li><span class="activity-dot"></span>{{ activity }}</li>
-                {% endfor %}
-            </ul>
-        </div>
+            <p class="quadrant-text">
+                Continue monitoring system performance and automation workflow completion.
+            </p>
+        </section>
 
-    </div>
+        <section class="command-quadrant" data-persona="security">
+            <h2>Security Analyst</h2>
+            <p class="quadrant-label">Risk Review</p>
 
-    <div class="card report-card">
-        <h2>Latest Report</h2>
-        <p>{{ latest_report }}</p>
-    </div>
+            <div class="quadrant-metrics">
+                <div>
+                    <span>Risk</span>
+                    <strong class="status-good">{{ advisor_impact }}</strong>
+                </div>
 
-    <div class="card chart-card">
-        <h2>Health Score History</h2>
-        <canvas id="healthScoreChart"></canvas>
-    </div>
-
-    <div class="card executive-card">
-        <h2>Executive Summary</h2>
-
-        <p>{{ executive_summary }}</p>
-
-        <div class="executive-grid">
-            <div>
-                <strong>System Status</strong><br>
-                <span class="{{ status_class }}">{{ status }}</span>
+                <div>
+                    <span>Automation</span>
+                    <strong class="{{ automation_class }}">{{ automation_status }}</strong>
+                </div>
             </div>
 
+            <p class="quadrant-text">
+                No abnormal operational indicators detected. Report retention remains scheduled.
+            </p>
+        </section>
+
+        <section class="command-quadrant" data-persona="reliability">
+            <h2>Reliability Engineer</h2>
+            <p class="quadrant-label">Resource Stability</p>
+
+            <div class="quadrant-metrics">
+                <div>
+                    <span>Disk</span>
+                    <strong class="{{ disk_class }}">{{ disk_usage }}</strong>
+                </div>
+
+                <div>
+                    <span>Memory</span>
+                    <strong class="metric">{{ memory_used }}</strong>
+                </div>
+            </div>
+
+            <p class="quadrant-text">
+                Resource posture appears stable. Trend status is currently {{ trend_status }}.
+            </p>
+        </section>
+
+        <section class="command-quadrant" data-persona="executive">
+            <h2>Executive View</h2>
+            <p class="quadrant-label">Decision Summary</p>
+
+            <div class="quadrant-metrics">
+                <div>
+                    <span>Health</span>
+                    <strong class="{{ health_class }}">{{ health_score }}</strong>
+                </div>
+
+                <div>
+                    <span>AI Engine</span>
+                    <strong>{{ ai_provider }}</strong>
+                </div>
+            </div>
+
+            <p class="quadrant-text">
+                {{ executive_summary }}
+            </p>
+        </section>
+
+    </main>
+
+    <section class="command-detail-panel">
+        <h2 id="command-title">Operations Manager Assessment</h2>
+        <p id="command-text">
+            System operations remain stable. Current status is {{ status }}, priority is {{ advisor_priority }}, and the recommended action is to continue monitoring.
+        </p>
+
+        <div class="advisor-result-grid">
             <div>
-                <strong>Risk Level</strong><br>
+                <strong>Impact</strong><br>
                 <span class="status-good">{{ advisor_impact }}</span>
+            </div>
+
+            <div>
+                <strong>Confidence</strong><br>
+                <span class="status-good">{{ advisor_confidence }}</span>
             </div>
 
             <div>
                 <strong>Priority</strong><br>
                 <span class="metric">{{ advisor_priority }}</span>
             </div>
-
-            <div>
-                <strong>AI Engine</strong><br>
-                {{ ai_provider }}
-            </div>
         </div>
-    </div>
+    </section>
 
-    <div class="card recommendations-card">
-        <h2>Operations Recommendations</h2>
+    <section class="lower-command-grid">
 
-        <table class="recommendations-table">
-            <thead>
-                <tr>
-                    <th>Recommended Action</th>
-                    <th>Priority</th>
-                    <th>Owner</th>
-                    <th>Status</th>
-                </tr>
-            </thead>
+        <div class="card chart-card">
+            <h2>Health Score History</h2>
+            <canvas id="healthScoreChart"></canvas>
+        </div>
 
-            <tbody>
-                {% for recommendation in recommendations %}
-                    <tr>
-                        <td>{{ recommendation.action }}</td>
-                        <td>{{ recommendation.priority }}</td>
-                        <td>{{ recommendation.owner }}</td>
-                        <td>{{ recommendation.status }}</td>
-                    </tr>
+        <div class="card activity-card">
+            <h2>Operations Timeline</h2>
+
+            <ul class="activity-list">
+                {% for activity in activity_feed %}
+                    <li>{{ activity }}</li>
                 {% endfor %}
-            </tbody>
-        </table>
-    </div>
-
-    <div class="card ai-card">
-        <h2>AI Operations Brief</h2>
-
-        <h3>Provider</h3>
-        <p>{{ ai_provider }}</p>
-
-        <h3>Risk Level</h3>
-        <p class="status-good">{{ ai_risk_level }}</p>
-
-        <h3>Key Findings</h3>
-        <ul>
-            {% for finding in ai_findings %}
-                <li>{{ finding }}</li>
-            {% endfor %}
-        </ul>
-
-        <h3>Operational Insight</h3>
-        <p>{{ operational_insight }}</p>
-
-        <div class="insight-grid">
-            <div>
-                <h3>Impact</h3>
-                <p class="status-good">{{ insight_impact }}</p>
-            </div>
-
-            <div>
-                <h3>Confidence</h3>
-                <p class="status-good">{{ insight_confidence }}</p>
-            </div>
-
-            <div>
-                <h3>Priority</h3>
-                <p class="metric">{{ insight_priority }}</p>
-            </div>
-
-            <div>
-                <h3>Suggested Review</h3>
-                <p>{{ insight_review }}</p>
-            </div>
+            </ul>
         </div>
 
-        <h3>Recommended Action</h3>
-        <p>{{ ai_recommendation }}</p>
-    </div>
+        <div class="card recommendations-card">
+            <h2>Operations Recommendations</h2>
 
-    <div class="card observations-card">
-        <h2>Advisor Observations</h2>
+            <table class="recommendations-table">
+                <thead>
+                    <tr>
+                        <th>Action</th>
+                        <th>Priority</th>
+                        <th>Owner</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
 
-        <ul class="observation-list">
-            {% for observation in advisor_observations %}
-                <li>
-                    <span class="observation-time">{{ observation.time }}</span>
-                    <span>{{ observation.message }}</span>
-                </li>
-            {% endfor %}
-        </ul>
-    </div>
-
-    <div class="card command-center-card">
-        <h2>AI Command Center</h2>
-
-        <div class="persona-grid">
-            <div class="persona-panel active-panel" data-persona="operations">
-                <h3>Operations Manager</h3>
-                <p>Status: {{ status }}</p>
-                <p>Priority: {{ advisor_priority }}</p>
-                <p>Action: Continue Monitoring</p>
-            </div>
-
-            <div class="persona-panel" data-persona="security">
-                <h3>Security Analyst</h3>
-                <p>Risk: {{ advisor_impact }}</p>
-                <p>Automation: {{ automation_status }}</p>
-                <p>Retention: Scheduled</p>
-            </div>
-
-            <div class="persona-panel" data-persona="reliability">
-                <h3>Reliability Engineer</h3>
-                <p>Disk: {{ disk_usage }}</p>
-                <p>Memory: {{ memory_used }}</p>
-                <p>Trend: {{ trend_status }}</p>
-            </div>
-
-            <div class="persona-panel" data-persona="executive">
-                <h3>Executive View</h3>
-                <p>Health: {{ health_score }}</p>
-                <p>Risk: {{ advisor_impact }}</p>
-                <p>AI Engine: {{ ai_provider }}</p>
-            </div>
+                <tbody>
+                    {% for recommendation in recommendations %}
+                        <tr>
+                            <td>{{ recommendation.action }}</td>
+                            <td>{{ recommendation.priority }}</td>
+                            <td>{{ recommendation.owner }}</td>
+                            <td>{{ recommendation.status }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
 
-        <div class="command-detail">
-            <h3 id="command-title">Operations Manager Assessment</h3>
-            <p id="command-text">
-                System operations remain stable. Current status is {{ status }}, priority is {{ advisor_priority }}, and the recommended action is to continue monitoring.
-            </p>
+        <div class="card observations-card">
+            <h2>Advisor Observations</h2>
 
-            <div class="advisor-result-grid">
-                <div>
-                    <strong>Impact</strong><br>
-                    <span class="status-good">{{ advisor_impact }}</span>
-                </div>
-
-                <div>
-                    <strong>Confidence</strong><br>
-                    <span class="status-good">{{ advisor_confidence }}</span>
-                </div>
-
-                <div>
-                    <strong>Priority</strong><br>
-                    <span class="metric">{{ advisor_priority }}</span>
-                </div>
-            </div>
+            <ul class="observation-list">
+                {% for observation in advisor_observations %}
+                    <li>
+                        <span class="observation-time">{{ observation.time }}</span>
+                        <span>{{ observation.message }}</span>
+                    </li>
+                {% endfor %}
+            </ul>
         </div>
-    </div>
+
+    </section>
 
     <script>
         const chartLabels = {{ chart_labels | tojson }};
@@ -296,7 +230,8 @@
                     label: 'Health Score',
                     data: chartScores,
                     borderWidth: 2,
-                    tension: 0.3
+                    tension: 0.35,
+                    fill: true
                 }]
             },
             options: {
@@ -344,9 +279,9 @@
             }
         };
 
-        document.querySelectorAll(".persona-panel").forEach(panel => {
+        document.querySelectorAll(".command-quadrant").forEach(panel => {
             panel.addEventListener("click", () => {
-                document.querySelectorAll(".persona-panel").forEach(p => {
+                document.querySelectorAll(".command-quadrant").forEach(p => {
                     p.classList.remove("active-panel");
                 });
 
